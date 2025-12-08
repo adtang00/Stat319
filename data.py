@@ -3,6 +3,10 @@ import pandas as pd
 from scipy import stats
 import numpy as np
 import matplotlib.pyplot as plt
+from statsmodels.graphics.factorplots import interaction_plot
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
 
 # fetch dataset 
 wine_quality = fetch_ucirepo(id=186) 
@@ -107,7 +111,83 @@ def bootstrap():
     plt.ylabel('Frequency')
     plt.title('Bootstrap Distribution of Mean ph')
     plt.show()
+    return runs
+
+def bootstrap_qq(vals):
+    stats.probplot(vals, dist="norm", plot=plt)
+    plt.title('Q-Q Plot for Bootstrap Means of pH')
+    plt.show()
+
+def bootstrap_ci(boot_vals, ci=0.95):
+    data = X['pH'].values
+    n = len(data)
+    boot_se = np.std(boot_vals, ddof=1)
+    xbar= np.mean(data)
+    t_crit = stats.t.ppf(1 - (1-ci) / 2, df=n - 1)
+    lower = xbar - t_crit * boot_se
+    upper = xbar + t_crit * boot_se
+
+    print("Bootstrap t 95% CI:", lower, upper)
+
+
+def mult_comparisons():
+    from ucimlrepo import fetch_ucirepo 
+    
+    # fetch dataset 
+    estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
+    
+    # data (as pandas dataframes) 
+    X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
+    y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
+    
+    # metadata 
+    print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.metadata) 
+    
+    # variable information 
+    print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.variables) 
+
+    df = pd.concat([X, y], axis=1)
+    df.columns = list(X.columns) + list(y.columns)
+
+    df['MTRANS_str'] = df['MTRANS'].astype(str)
+    df['CAEC_str'] = df['CAEC'].astype(str)
+
+    # 3️⃣ Interaction plot
+    plt.figure(figsize=(8,6))
+    interaction_plot(df['MTRANS'], df['CAEC'], df['Weight'],
+                     colors=['red','blue','green','orange'], markers=['o','s','^','D'], ms=8)
+    plt.xlabel('MTRANS')
+    plt.ylabel('Weight(kg)')
+    plt.title('Interaction Plot: Weight by MTRANS and CAEC')
+    plt.show()
+
+    model = smf.ols("Weight ~ C(MTRANS) + C(CAEC)", data=df).fit()
+    anova_table = sm.stats.anova_lm(model, typ=2)
+    print(anova_table)
+
+    residuals = model.resid
+    fitted = model.fittedvalues
+    # Create plots
+    fig, ax = plt.subplots(1, 2, figsize=(12,5))
+
+    # 1. Q-Q plot of residuals
+    sm.qqplot(residuals, line='s', ax=ax[0])
+    ax[0].set_title('Q-Q Plot of Residuals')
+
+    # 2. Residuals vs Fitted plot
+    ax[1].scatter(fitted, residuals)
+    ax[1].axhline(0, color='red', linestyle='--')
+    ax[1].set_xlabel('Fitted values')
+    ax[1].set_ylabel('Residuals')
+    ax[1].set_title('Residuals vs Fitted')
+
+    plt.tight_layout()
+    plt.show()
+
 
 if __name__ == "__main__":
-    bootstrap()
+    #bootstrap_vals = bootstrap()
+    #bootstrap_qq(bootstrap_vals)
+    #bootstrap_ci(bootstrap_vals)
+    mult_comparisons()
     pass
