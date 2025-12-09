@@ -152,7 +152,7 @@ def mult_comparisons():
     df['MTRANS_str'] = df['MTRANS'].astype(str)
     df['CAEC_str'] = df['CAEC'].astype(str)
 
-    # 3️⃣ Interaction plot
+    # 3️. Interaction plot
     plt.figure(figsize=(8,6))
     interaction_plot(df['MTRANS'], df['CAEC'], df['Weight'],
                      colors=['red','blue','green','orange'], markers=['o','s','^','D'], ms=8)
@@ -184,6 +184,40 @@ def mult_comparisons():
     plt.tight_layout()
     plt.show()
 
+    # 4. Hypothesis test for equality of means
+    # Calculate MSA and MSB
+    msa = anova_table['sum_sq']['C(MTRANS)'] / anova_table['df']['C(MTRANS)']
+    msb = anova_table['sum_sq']['C(CAEC)'] / anova_table['df']['C(CAEC)']
+    mse = anova_table['sum_sq']['Residual'] / anova_table['df']['Residual']
+
+    # Calculate F-statistics
+    f_stat_a = msa / mse
+    f_stat_b = msb / mse
+    print(f"F-statistic for MTRANS: {f_stat_a}")
+    print(f"F-statistic for CAEC: {f_stat_b}")
+
+    # Critical F-value
+    alpha = 0.05
+    f_crit_a = stats.f.ppf(1 - alpha, anova_table['df']['C(MTRANS)'], anova_table['df']['Residual'])
+    f_crit_b = stats.f.ppf(1 - alpha, anova_table['df']['C(CAEC)'], anova_table['df']['Residual'])
+    print(f"Critical F-value for MTRANS: {f_crit_a}")
+    print(f"Critical F-value for CAEC: {f_crit_b}")
+
+    # p-values
+    p_value_a = 1 - stats.f.cdf(f_stat_a, anova_table['df']['C(MTRANS)'], anova_table['df']['Residual'])
+    p_value_b = 1 - stats.f.cdf(f_stat_b, anova_table['df']['C(CAEC)'], anova_table['df']['Residual'])
+    print(f"P-value for MTRANS: {p_value_a}")   
+    print(f"P-value for CAEC: {p_value_b}")
+
+    # Conclusion
+    if f_stat_a > f_crit_a:
+        print("Reject null hypothesis for MTRANS: At least one group mean is different.")
+    else:
+        print("Fail to reject null hypothesis for MTRANS: No significant difference between group means.") 
+    if f_stat_b > f_crit_b:
+        print("Reject null hypothesis for CAEC: At least one group mean is different.")
+    else:
+        print("Fail to reject null hypothesis for CAEC: No significant difference between group means.")
 
 if __name__ == "__main__":
     #bootstrap_vals = bootstrap()

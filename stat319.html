@@ -7,9 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Adrian T.">
-<meta name="dcterms.date" content="2025-12-08">
 
-<title>Example Quarto Document</title>
+<title>Wine and Obesity Data Analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -43,23 +42,38 @@ ul.task-list li input[type="checkbox"] {
 
 <body class="quarto-light">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
   <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
-  <li><a href="#simple-python-example" id="toc-simple-python-example" class="nav-link" data-scroll-target="#simple-python-example"><span class="header-section-number">2</span> Simple Python Example</a></li>
-  <li><a href="#display-first-5-values" id="toc-display-first-5-values" class="nav-link" data-scroll-target="#display-first-5-values"><span class="header-section-number">3</span> Display first 5 values</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link active" data-scroll-target="#dataset-overview">1. Dataset Overview</a>
+  <ul class="collapse">
+  <li><a href="#wine-quality-dataset" id="toc-wine-quality-dataset" class="nav-link" data-scroll-target="#wine-quality-dataset">Wine Quality Dataset</a></li>
+  <li><a href="#obesity-dataset" id="toc-obesity-dataset" class="nav-link" data-scroll-target="#obesity-dataset">Obesity Dataset</a></li>
+  </ul></li>
+  <li><a href="#one-sample-t-test-wine-alcohol-content" id="toc-one-sample-t-test-wine-alcohol-content" class="nav-link" data-scroll-target="#one-sample-t-test-wine-alcohol-content">2. One-Sample T-Test: Wine Alcohol Content</a></li>
+  <li><a href="#bootstrap-confidence-interval-wine-ph" id="toc-bootstrap-confidence-interval-wine-ph" class="nav-link" data-scroll-target="#bootstrap-confidence-interval-wine-ph">3. Bootstrap Confidence Interval: Wine pH</a></li>
+  <li><a href="#analysis-of-variance-obesity-dataset" id="toc-analysis-of-variance-obesity-dataset" class="nav-link" data-scroll-target="#analysis-of-variance-obesity-dataset">4. Analysis of Variance (Obesity Dataset)</a>
+  <ul class="collapse">
+  <li><a href="#anova-model-and-assumptions" id="toc-anova-model-and-assumptions" class="nav-link" data-scroll-target="#anova-model-and-assumptions">ANOVA Model and Assumptions</a></li>
+  <li><a href="#f-tests-for-factors" id="toc-f-tests-for-factors" class="nav-link" data-scroll-target="#f-tests-for-factors">F-Tests for Factors</a></li>
+  </ul></li>
+  <li><a href="#multiple-comparisons" id="toc-multiple-comparisons" class="nav-link" data-scroll-target="#multiple-comparisons">5. Multiple Comparisons</a></li>
+  <li><a href="#interaction-plot" id="toc-interaction-plot" class="nav-link" data-scroll-target="#interaction-plot">6. Interaction Plot</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">7. Summary</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Example Quarto Document</h1>
+<h1 class="title">Wine and Obesity Data Analysis</h1>
 </div>
 
 
@@ -76,7 +90,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 8, 2025</p>
+      <p class="date">Invalid Date</p>
     </div>
   </div>
   
@@ -88,19 +102,153 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="introduction" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>Welcome to this <strong>example Quarto document</strong>.<br>
-You can write text, include <strong>code</strong>, <strong>figures</strong>, and <strong>tables</strong>.</p>
+<section id="dataset-overview" class="level1">
+<h1>1. Dataset Overview</h1>
+<section id="wine-quality-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="wine-quality-dataset">Wine Quality Dataset</h2>
+<ul>
+<li>Collected in 2009, reporting physiochemical properties for red and white Portuguese “Vinho Verde” wines.<br>
+</li>
+<li>6497 rows, 11 columns: <code>fixed_acidity</code>, <code>volatile_acidity</code>, <code>citric_acid</code>, <code>residual_sugar</code>, <code>chlorides</code>, <code>free_sulfur_dioxide</code>, <code>total_sulfur_dioxide</code>, <code>density</code>, <code>ph</code>, <code>sulphates</code>, <code>alcohol</code>, <code>quality</code>, <code>color</code>.<br>
+</li>
+<li>Observational study; each wine sample measured independently.</li>
+</ul>
 </section>
-<section id="simple-python-example" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Simple Python Example</h1>
-<p>Here is a simple Python calculation:</p>
-<p>import numpy as np x = np.linspace(0, 2*np.pi, 100) y = np.sin(x)</p>
+<section id="obesity-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="obesity-dataset">Obesity Dataset</h2>
+<ul>
+<li>Factors: <code>MTRANS</code> (transportation method), <code>CAEC</code> (calories/food consumption behavior).<br>
+</li>
+<li>Response variable: <code>Weight</code> (or obesity level score).</li>
+</ul>
+<hr>
 </section>
-<section id="display-first-5-values" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Display first 5 values</h1>
-<p>y[:5]</p>
+</section>
+<section id="one-sample-t-test-wine-alcohol-content" class="level1">
+<h1>2. One-Sample T-Test: Wine Alcohol Content</h1>
+<p><strong>Research Question:</strong> Is the average alcohol content of red and white wine greater than 10.5%?</p>
+<p><strong>Hypotheses:</strong><br>
+- (H_0: = 10.5)<br>
+- (H_a: &gt; 10.5)</p>
+<p><strong>Results:</strong><br>
+- Sample mean: 10.4918<br>
+- t-statistic: -0.5541<br>
+- Critical t-value (α = 0.05): 1.6451<br>
+- One-tailed p-value: 0.7102<br>
+- 95% Confidence Interval: (10.4628, 10.5208)</p>
+<p><strong>Conclusion:</strong> Fail to reject (H_0). There is insufficient evidence that the mean alcohol content exceeds 10.5%.</p>
+<hr>
+</section>
+<section id="bootstrap-confidence-interval-wine-ph" class="level1">
+<h1>3. Bootstrap Confidence Interval: Wine pH</h1>
+<ul>
+<li>95% confidence interval for wine pH: (3.215, 3.222).<br>
+</li>
+<li>QQ plot indicates approximate normality.</li>
+</ul>
+<p><strong>Conclusion:</strong> We are 95% confident that the true population mean pH lies between 3.215 and 3.222.</p>
+<hr>
+</section>
+<section id="analysis-of-variance-obesity-dataset" class="level1">
+<h1>4. Analysis of Variance (Obesity Dataset)</h1>
+<section id="anova-model-and-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="anova-model-and-assumptions">ANOVA Model and Assumptions</h3>
+<ul>
+<li>Two-way ANOVA with interaction: <code>Weight ~ MTRANS * CAEC</code>.<br>
+</li>
+<li><strong>Residual Analysis:</strong>
+<ul>
+<li>QQ plot shows approximate normality.<br>
+</li>
+<li>Residual plot shows no clear pattern (homoscedasticity).<br>
+</li>
+</ul></li>
+<li><strong>Conclusion:</strong> ANOVA assumptions satisfied (normality, independence, equal variance).</li>
+</ul>
+</section>
+<section id="f-tests-for-factors" class="level3">
+<h3 class="anchored" data-anchor-id="f-tests-for-factors">F-Tests for Factors</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 26%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Factor</th>
+<th>F-statistic</th>
+<th>F-critical</th>
+<th>p-value</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MTRANS</td>
+<td>6.85</td>
+<td>2.376</td>
+<td>1.78 × 10⁻⁵</td>
+<td>Reject H₀: At least one group mean differs</td>
+</tr>
+<tr class="even">
+<td>CAEC</td>
+<td>149.69</td>
+<td>2.609</td>
+<td>1.11 × 10⁻¹⁶</td>
+<td>Reject H₀: At least one group mean differs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong> Both MTRANS and CAEC significantly affect Weight; differences between group means are unlikely due to chance.</p>
+<hr>
+</section>
+</section>
+<section id="multiple-comparisons" class="level1">
+<h1>5. Multiple Comparisons</h1>
+<ul>
+<li>Tukey HSD pairwise tests show:
+<ul>
+<li>MTRANS: at least one pair of transportation methods differs significantly.<br>
+</li>
+<li>CAEC: multiple dietary behavior levels show highly significant differences.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="interaction-plot" class="level1">
+<h1>6. Interaction Plot</h1>
+<p>The interaction plot indicates <strong>non-additive effects</strong>, supporting the inclusion of the interaction term in the ANOVA model.</p>
+<hr>
+</section>
+<section id="summary" class="level1">
+<h1>7. Summary</h1>
+<ol type="1">
+<li>Wine alcohol content does not significantly exceed 10.5% (t-test).<br>
+</li>
+<li>Wine pH bootstrap CI confirms approximate normality.<br>
+</li>
+<li>Obesity dataset ANOVA shows both MTRANS and CAEC significantly affect Weight.<br>
+</li>
+<li>Residual and QQ plots satisfy model assumptions.<br>
+</li>
+<li>Multiple comparisons reveal which specific factor levels differ.<br>
+</li>
+<li>Interaction plot confirms non-additive effects.</li>
+</ol>
+<hr>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<ul>
+<li><a href="https://archive.ics.uci.edu/dataset/186/wine+quality">UCI Wine Quality Dataset</a><br>
+</li>
+<li><a href="https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition">UCI Obesity Dataset</a><br>
+</li>
+<li><a href="https://github.com/adtang00/Stat319.git">Stat319 GitHub Repository</a></li>
+</ul>
 </section>
 
 </main>

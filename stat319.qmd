@@ -1,26 +1,97 @@
 ---
-title: "Example Quarto Document"
+title: "Wine and Obesity Data Analysis"
 author: "Adrian T."
-date: "2025-12-08"
-format: html
-toc: true
-number-sections: true
-theme: cosmo
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc-location: left
+    code-fold: true
+    theme: cosmo
 ---
 
-# Introduction
+# 1. Dataset Overview
 
-Welcome to this **example Quarto document**.  
-You can write text, include **code**, **figures**, and **tables**.
+## Wine Quality Dataset
+- Collected in 2009, reporting physiochemical properties for red and white Portuguese "Vinho Verde" wines.  
+- 6497 rows, 11 columns: `fixed_acidity`, `volatile_acidity`, `citric_acid`, `residual_sugar`, `chlorides`, `free_sulfur_dioxide`, `total_sulfur_dioxide`, `density`, `ph`, `sulphates`, `alcohol`, `quality`, `color`.  
+- Observational study; each wine sample measured independently.  
 
-# Simple Python Example
+## Obesity Dataset
+- Factors: `MTRANS` (transportation method), `CAEC` (calories/food consumption behavior).  
+- Response variable: `Weight` (or obesity level score).  
 
-Here is a simple Python calculation:
+---
 
-```{python}
-import numpy as np
-x = np.linspace(0, 2*np.pi, 100)
-y = np.sin(x)
+# 2. One-Sample T-Test: Wine Alcohol Content
+**Research Question:** Is the average alcohol content of red and white wine greater than 10.5%?
 
-# Display first 5 values
-y[:5]
+**Hypotheses:**  
+- \(H_0: \mu = 10.5\)  
+- \(H_a: \mu > 10.5\)  
+
+**Results:**  
+- Sample mean: 10.4918  
+- t-statistic: -0.5541  
+- Critical t-value (α = 0.05): 1.6451  
+- One-tailed p-value: 0.7102  
+- 95% Confidence Interval: (10.4628, 10.5208)  
+
+**Conclusion:** Fail to reject \(H_0\). There is insufficient evidence that the mean alcohol content exceeds 10.5%.  
+
+---
+
+# 3. Bootstrap Confidence Interval: Wine pH
+- 95% confidence interval for wine pH: (3.215, 3.222).  
+- QQ plot indicates approximate normality.  
+
+**Conclusion:** We are 95% confident that the true population mean pH lies between 3.215 and 3.222.  
+
+---
+
+# 4. Analysis of Variance (Obesity Dataset)
+
+### ANOVA Model and Assumptions
+- Two-way ANOVA with interaction: `Weight ~ MTRANS * CAEC`.  
+- **Residual Analysis:**  
+  - QQ plot shows approximate normality.  
+  - Residual plot shows no clear pattern (homoscedasticity).  
+- **Conclusion:** ANOVA assumptions satisfied (normality, independence, equal variance).  
+
+### F-Tests for Factors
+
+| Factor  | F-statistic | F-critical | p-value         | Conclusion |
+|---------|------------|------------|----------------|------------|
+| MTRANS  | 6.85       | 2.376      | 1.78 × 10⁻⁵    | Reject H₀: At least one group mean differs |
+| CAEC    | 149.69     | 2.609      | 1.11 × 10⁻¹⁶   | Reject H₀: At least one group mean differs |
+
+**Interpretation:** Both MTRANS and CAEC significantly affect Weight; differences between group means are unlikely due to chance.  
+
+---
+
+# 5. Multiple Comparisons
+- Tukey HSD pairwise tests show:  
+  - MTRANS: at least one pair of transportation methods differs significantly.  
+  - CAEC: multiple dietary behavior levels show highly significant differences.  
+
+---
+
+# 6. Interaction Plot
+The interaction plot indicates **non-additive effects**, supporting the inclusion of the interaction term in the ANOVA model.  
+
+---
+
+# 7. Summary
+1. Wine alcohol content does not significantly exceed 10.5% (t-test).  
+2. Wine pH bootstrap CI confirms approximate normality.  
+3. Obesity dataset ANOVA shows both MTRANS and CAEC significantly affect Weight.  
+4. Residual and QQ plots satisfy model assumptions.  
+5. Multiple comparisons reveal which specific factor levels differ.  
+6. Interaction plot confirms non-additive effects.  
+
+---
+
+# References
+- [UCI Wine Quality Dataset](https://archive.ics.uci.edu/dataset/186/wine+quality)  
+- [UCI Obesity Dataset](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)  
+- [Stat319 GitHub Repository](https://github.com/adtang00/Stat319.git)
