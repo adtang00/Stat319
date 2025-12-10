@@ -43,7 +43,7 @@ def plot_histogram_q1():
 
     plt.hist(sample_means, bins=30, edgecolor='black')
     plt.xlabel("Sample Mean of Density")
-    plt.title("Sampling Distribution of Sample Mean (Density)")
+    #plt.title("Sampling Distribution of Sample Mean (Density)")
     plt.show()
 
 def bootstrap():
@@ -167,7 +167,7 @@ def hypothesis_test(model):
 
 # 1. Dataset Overview
 
-## Wine Quality Dataset
+## 1.1 Wine Quality Dataset
 
 - **Collection Year:** 2009  
 - **Description:** Physiochemical properties for red and white Portuguese "Vinho Verde" wines.  
@@ -177,15 +177,17 @@ def hypothesis_test(model):
 
 ## Sampling Distribution of Density
 
-The following histogram shows the bootstrap sampling distribution of the **sample mean of the `density` variable**.
+The following histogram shows the sampling distribution of the **sample mean of the `density` variable**.
 
 ```{python}
 #| echo: false
+#| label: fig-q1
+#| fig-cap: "Sampling Distribution of Sample Mean (Density)"
 plot_histogram_q1()
 ```
 
 
-## Obesity Dataset
+## 1.2 Obesity Dataset
 
 - **Collection Year:** 2019  
 - **Description:** Estimation of obesity levels in individuals from Mexico, Peru, and Colombia, based on eating habits and physical condition.  
@@ -218,12 +220,16 @@ plot_histogram_q1()
 ## Bootstrap Distribution
 ```{python}
 #| echo: false
+#| label: fig-q3-1
+#| fig-cap: "Bootstrap Distribution of Wine pH"
 vals = bootstrap()
 plot_bootstrap(vals)
 ```
 ## QQ Plot for Bootstrap
 ```{python}
 #| echo: false
+#| label: fig-q3-2
+#| fig-cap: "QQ Plot of Bootstrap Means (pH)"
 bootstrap_qq(vals)
 ```
 ## 95% Bootstrap Confidence Interval
@@ -243,13 +249,13 @@ upper = np.percentile(vals, 97.5)
 
 # 4. Analysis of Variance (Wine Dataset)
 
-## F Test
+## 4.1 F Test
 
-## ANOVA Table
+## 4.2 ANOVA Table
 
-## AVOVA Assumptions Check
+## 4.3 AVOVA Assumptions Check
 
-## Conclusion
+## 4.4 Conclusion
 
 ---
 
