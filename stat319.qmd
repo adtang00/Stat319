@@ -243,17 +243,25 @@ upper = np.percentile(vals, 97.5)
 
 # 4. Analysis of Variance (Wine Dataset)
 
+## F Test
+
+## ANOVA Table
+
+## AVOVA Assumptions Check
+
+## Conclusion
+
 ---
 
 # 5. Multiple Comparisons (Obesity Dataset)
-### ANOVA Model and Assumptions
+## ANOVA Model and Assumptions
 - Two-way ANOVA with interaction: `Weight ~ MTRANS * CAEC`.
 ```{python}
 #| echo: false
 model = mult_comparisons()
 ```
 
-- **QQ Plot and Residual Analysis:**  
+## QQ Plot and Residual Analysis:
 ```{python}
 #| echo: false
 plot_resid_fitted(model)
@@ -262,7 +270,7 @@ plot_resid_fitted(model)
   - Residual plot shows no clear pattern.  
 - **Conclusion:** ANOVA assumptions satisfied (normality, independence, equal variance).  
 
-### F-Tests for Factors
+## F-Tests for Factors
 
 | Factor  | F-statistic | F-critical | p-value         | Conclusion |
 |---------|------------|------------|----------------|------------|
@@ -273,10 +281,11 @@ plot_resid_fitted(model)
 
 ---
 
-
-
-
 # References
-- [UCI Wine Quality Dataset](https://archive.ics.uci.edu/dataset/186/wine+quality)  
-- [UCI Obesity Dataset](https://archive.ics.uci.edu/dataset/544/estimation+of+obesity+levels+based+on+eating+habits+and+physical+condition)  
-- [Stat319 GitHub Repository](https://github.com/adtang00/Stat319.git)
+Cortez, Paulo, et al. "Wine Quality." UCI Machine Learning Repository, 2009, https://doi.org/10.24432/C56S3T.
+
+"Estimation of Obesity Levels Based On Eating Habits and Physical Condition ." UCI Machine Learning Repository, 2019, https://doi.org/10.24432/C5H31Z.
+
+---
+
+# Code Appendix
