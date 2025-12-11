@@ -153,6 +153,7 @@ def hypothesis_test(model):
     print(f"P-value for MTRANS: {p_value_a}")   
     print(f"P-value for CAEC: {p_value_b}")
 
+
     # Conclusion
     if f_stat_a > f_crit_a:
         print("Reject null hypothesis for MTRANS: At least one group mean is different.")
@@ -162,6 +163,45 @@ def hypothesis_test(model):
         print("Reject null hypothesis for CAEC: At least one group mean is different.")
     else:
         print("Fail to reject null hypothesis for CAEC: No significant difference between group means.")
+
+    return anova_table
+
+def multiple_comparisons(model):
+    from statsmodels.stats.multicomp import pairwise_tukeyhsd
+    import pandas as pd
+
+    # Extract dataframe used in the model
+    df = model.model.data.frame.copy()
+
+    # Convert factors to string for Tukey labels
+    df['MTRANS_str'] = df['MTRANS'].astype(str)
+    df['CAEC_str'] = df['CAEC'].astype(str)
+
+    # --- Tukey for MTRANS ---
+    tukey_mtrans = pairwise_tukeyhsd(
+        endog=df['Weight'],
+        groups=df['MTRANS_str'],
+        alpha=0.05
+    )
+
+    # Convert Tukey result to DataFrame
+    mtrans_df = pd.DataFrame(
+        data=tukey_mtrans._results_table.data[1:],   # skip header row
+        columns=tukey_mtrans._results_table.data[0]  # use header row
+    )
+
+    # --- Tukey for CAEC ---
+    tukey_caec = pairwise_tukeyhsd(
+        endog=df['Weight'],
+        groups=df['CAEC_str'],
+        alpha=0.05
+    )
+
+    caec_df = pd.DataFrame(
+        data=tukey_caec._results_table.data[1:],
+        columns=tukey_caec._results_table.data[0]
+    )
+    return mtrans_df, caec_df
 
 ```
 
@@ -260,14 +300,14 @@ upper = np.percentile(vals, 97.5)
 ---
 
 # 5. Multiple Comparisons (Obesity Dataset)
-## ANOVA Model and Assumptions
+## 5.1 ANOVA Model and Assumptions
 - Two-way ANOVA with interaction: `Weight ~ MTRANS * CAEC`.
 ```{python}
 #| echo: false
 model = mult_comparisons()
 ```
 
-## QQ Plot and Residual Analysis:
+## 5.2 QQ Plot and Residual Analysis:
 ```{python}
 #| echo: false
 plot_resid_fitted(model)
@@ -276,16 +316,41 @@ plot_resid_fitted(model)
   - Residual plot shows no clear pattern.  
 - **Conclusion:** ANOVA assumptions satisfied (normality, independence, equal variance).  
 
-## F-Tests for Factors
+## 5.3 F-Tests for Factors
+```{python}
+#| echo: false
+#anova_table = hypothesis_test(model)
+#anova_table
+```
 
 | Factor  | F-statistic | F-critical | p-value         | Conclusion |
 |---------|------------|------------|----------------|------------|
-| MTRANS  | 6.85       | 2.376      | 1.78 × 10⁻⁵    | Reject H₀: At least one group mean differs |
-| CAEC    | 149.69     | 2.609      | 1.11 × 10⁻¹⁶   | Reject H₀: At least one group mean differs |
+| MTRANS  | 6.85       | 2.376      | $1.78 \times 10^{-5}$   | Reject H₀: At least one group mean differs |
+| CAEC    | 149.69     | 2.609      | $1.11 \times 10^{-16}$   | Reject H₀: At least one group mean differs |
 
 **Interpretation:** Both MTRANS and CAEC significantly affect Weight; differences between group means are unlikely due to chance.  
 
+## 5.4 Pairwise Comparisons
+```{python}
+#| echo: false
+mtrans_df, caec_df = multiple_comparisons(model)
+```
+```{python}
+#| echo: false
+#| label: fig-q5-1
+#| fig-cap: "Tukey HSD Pairwise Comparison for MTRANS"
+mtrans_df
+```
+```{python}
+#| echo: false
+#| label: fig-q5-2
+#| fig-cap: "Tukey HSD Pairwise Comparison for CAEC"
+caec_df
+```
+
 ---
+
+
 
 # References
 Cortez, Paulo, et al. "Wine Quality." UCI Machine Learning Repository, 2009, https://doi.org/10.24432/C56S3T.

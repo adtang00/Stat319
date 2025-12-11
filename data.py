@@ -56,7 +56,7 @@ def bootstrap_qq(vals):
     plt.title("QQ Plot for Bootstrap Means of pH")
     plt.show()
 
-def mult_comparisons():
+def interaction_plot_model():
     # fetch dataset 
     estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
     
@@ -113,6 +113,7 @@ def plot_resid_fitted(model):
 
 def hypothesis_test(model):
     anova_table = sm.stats.anova_lm(model, typ=2)
+
     # 4. Hypothesis test for equality of means
     # Calculate MSA and MSB
     msa = anova_table['sum_sq']['C(MTRANS)'] / anova_table['df']['C(MTRANS)']
@@ -148,5 +149,55 @@ def hypothesis_test(model):
     else:
         print("Fail to reject null hypothesis for CAEC: No significant difference between group means.")
 
+    return anova_table
+
+def multiple_comparisons(model):
+    from statsmodels.stats.multicomp import pairwise_tukeyhsd
+    import pandas as pd
+
+    # Extract dataframe used in the model
+    df = model.model.data.frame.copy()
+
+    # Convert factors to string for Tukey labels
+    df['MTRANS_str'] = df['MTRANS'].astype(str)
+    df['CAEC_str'] = df['CAEC'].astype(str)
+
+    # --- Tukey for MTRANS ---
+    tukey_mtrans = pairwise_tukeyhsd(
+        endog=df['Weight'],
+        groups=df['MTRANS_str'],
+        alpha=0.05
+    )
+
+    # Convert Tukey result to DataFrame
+    mtrans_df = pd.DataFrame(
+        data=tukey_mtrans._results_table.data[1:],   # skip header row
+        columns=tukey_mtrans._results_table.data[0]  # use header row
+    )
+
+    print("\n=== Tukey HSD for MTRANS ===")
+    print(mtrans_df.to_markdown(index=False))
+
+
+    # --- Tukey for CAEC ---
+    tukey_caec = pairwise_tukeyhsd(
+        endog=df['Weight'],
+        groups=df['CAEC_str'],
+        alpha=0.05
+    )
+
+    caec_df = pd.DataFrame(
+        data=tukey_caec._results_table.data[1:],
+        columns=tukey_caec._results_table.data[0]
+    )
+
+    print("\n=== Tukey HSD for CAEC ===")
+    print(caec_df.to_markdown(index=False))
+
+    return mtrans_df, caec_df
+
+
 if __name__ == "__main__":
+    model = interaction_plot_model()
+    multiple_comparisons(model)
     pass
