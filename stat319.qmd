@@ -92,18 +92,22 @@ def mult_comparisons():
     df['CAEC_str'] = df['CAEC'].astype(str)
 
 
-    # 3️. Interaction plot
-    plt.figure(figsize=(12,8))
-    interaction_plot(df['MTRANS'], df['CAEC'], df['Weight'],
-                     colors=['red','blue','green','orange'], markers=['o','s','^','D'], ms=8)
-    plt.xlabel('MTRANS')
-    plt.ylabel('Weight(kg)')
-    plt.title('Interaction Plot: Weight by MTRANS and CAEC')
+    # Interaction plot
+    fig, ax = plt.subplots(figsize=(12, 8))
+    interaction_plot(
+    df['MTRANS'], df['CAEC'], df['Weight'],
+    colors=['red','blue','green','orange'],
+    markers=['o','s','^','D'], ms=8,
+    ax=ax # pass axes to avoid auto (a)/(b)
+    )
+    ax.set_xlabel('MTRANS')
+    ax.set_ylabel('Weight (kg)')
+    #ax.set_title('Interaction Plot: Weight by MTRANS and CAEC')
+
     plt.show()
 
     model = smf.ols("Weight ~ C(MTRANS) + C(CAEC)", data=df).fit()
-    #anova_table = sm.stats.anova_lm(model, typ=2)
-    #print(anova_table)
+    
     return model
 
 def plot_resid_fitted(model):
@@ -114,7 +118,7 @@ def plot_resid_fitted(model):
 
     # 1. Q-Q plot of residuals
     sm.qqplot(residuals, line='s', ax=ax[0])
-    ax[0].set_title('Q-Q Plot of Residuals')
+    ax[0].set_title('QQ Plot of Residuals')
 
     # 2. Residuals vs Fitted plot
     ax[1].scatter(fitted, residuals)
@@ -241,6 +245,7 @@ plot_histogram_q1()
 **Research Question:** Is the average alcohol content of red and white wine greater than 10.5%?
 
 **Hypotheses:**  
+The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content is greater than 10.5%. 
 - \(H_0: \mu = 10.5\)  
 - \(H_a: \mu > 10.5\)  
 
@@ -301,32 +306,36 @@ upper = np.percentile(vals, 97.5)
 
 # 5. Multiple Comparisons (Obesity Dataset)
 ## 5.1 ANOVA Model and Assumptions
-- Two-way ANOVA with interaction: `Weight ~ MTRANS * CAEC`.
 ```{python}
 #| echo: false
+#| label: fig-q5-1
+#| fig-cap: "Two-way ANOVA with interaction: Weight ~ MTRANS * CAEC"
+#| fig-pos: "H"
 model = mult_comparisons()
 ```
+
+- **Interpretation:** Based on @fig-q5-1, Weight differs across the different MTRANS (Method of Transportation) categories. The lines for different CAEC overlap, suggesting a relationship exists between MTRANS and CAEC levels.
 
 ## 5.2 QQ Plot and Residual Analysis:
 ```{python}
 #| echo: false
+#| label: fig-q5-2
+#| fig-cap: "QQ Plot and Residual Plot"
+#| fig-pos: "H"
 plot_resid_fitted(model)
 ```
-  - QQ plot shows approximate normality.  
+
+  - QQ plot shows approximate normality as the data falls around the line.  
   - Residual plot shows no clear pattern.  
 - **Conclusion:** ANOVA assumptions satisfied (normality, independence, equal variance).  
 
 ## 5.3 F-Tests for Factors
-```{python}
-#| echo: false
-#anova_table = hypothesis_test(model)
-#anova_table
-```
 
 | Factor  | F-statistic | F-critical | p-value         | Conclusion |
 |---------|------------|------------|----------------|------------|
 | MTRANS  | 6.85       | 2.376      | $1.78 \times 10^{-5}$   | Reject H₀: At least one group mean differs |
 | CAEC    | 149.69     | 2.609      | $1.11 \times 10^{-16}$   | Reject H₀: At least one group mean differs |
+: ANOVA results for MTRANS and CAEC factors {#tbl-anova_mtrans_caec}
 
 **Interpretation:** Both MTRANS and CAEC significantly affect Weight; differences between group means are unlikely due to chance.  
 
@@ -337,14 +346,15 @@ mtrans_df, caec_df = multiple_comparisons(model)
 ```
 ```{python}
 #| echo: false
-#| label: fig-q5-1
-#| fig-cap: "Tukey HSD Pairwise Comparison for MTRANS"
+#| label: tbl-q5-1
+#| tbl-cap: "Tukey HSD Pairwise Comparison for MTRANS"
 mtrans_df
 ```
+
 ```{python}
 #| echo: false
-#| label: fig-q5-2
-#| fig-cap: "Tukey HSD Pairwise Comparison for CAEC"
+#| label: tbl-q5-2
+#| tbl-cap: "Tukey HSD Pairwise Comparison for CAEC"
 caec_df
 ```
 
