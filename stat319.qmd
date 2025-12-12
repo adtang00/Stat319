@@ -214,11 +214,30 @@ def multiple_comparisons(model):
 
 ## 1.1 Wine Quality Dataset
 
-- **Collection Year:** 2009  
+- **Collection Year:** 2009
+- **Study Type:** Observational; each wine sample measured independently.
 - **Description:** Physiochemical properties for red and white Portuguese "Vinho Verde" wines.  
 - **Size:** 6497 rows, 12 columns  
 - **Variables:** `fixed_acidity`, `volatile_acidity`, `citric_acid`, `residual_sugar`, `chlorides`, `free_sulfur_dioxide`, `total_sulfur_dioxide`, `density`, `ph`, `sulphates`, `alcohol`, `quality`, `color`  
-- **Study Type:** Observational; each wine sample measured independently.
+
+| Variable Name           | Role    | Type        | Description                   |
+|-------------------------|---------|-------------|-------------------------------|
+| fixed_acidity          | Feature | Continuous  |                               |
+| volatile_acidity       | Feature | Continuous  |                               |
+| citric_acid            | Feature | Continuous  |                               |
+| residual_sugar         | Feature | Continuous  |                               |
+| chlorides              | Feature | Continuous  |                               |
+| free_sulfur_dioxide    | Feature | Continuous  |                               |
+| total_sulfur_dioxide   | Feature | Continuous  |                               |
+| density                | Feature | Continuous  |                               |
+| pH                     | Feature | Continuous  |                               |
+| sulphates              | Feature | Continuous  |                               |
+| alcohol                | Feature | Continuous  |                               |
+| quality                | Target  | Integer     | score between 0 and 10        |
+| color                  | Other   | Categorical | red or white                  |
+: Dataset 1 Variables {tbl-q1-tb1}
+
+
 
 ### Sampling Distribution of Density
 
@@ -231,10 +250,13 @@ The following histogram shows the sampling distribution of the **sample mean of 
 plot_histogram_q1()
 ```
 
+@fig-q1 shows the sampling distribution of the sample mean of wine densities. The shape of the sampling distribution is approximately normal with little to no skew.
+
 
 ## 1.2 Obesity Dataset
 
-- **Collection Year:** 2019  
+- **Collection Year:** 2019
+- **Study Type:** Observational; each individual measured independently.
 - **Description:** Estimation of obesity levels in individuals from Mexico, Peru, and Colombia, based on eating habits and physical condition.  
 - **Size:** 2111 rows, 16 columns  
 - **Variables:** `Gender`, `Age`, `Height`, `Weight`, `Family_history_with_overweight`, `FAVC`, `FCVC`, `NCP`, `CAEC`, `SMOKE`, `CH20`, `SCC`, `FAF`, `TUE`, `CALC`, `MTRANS`, `NObeyesdad`
@@ -258,20 +280,20 @@ plot_histogram_q1()
 | CALC                              | Feature | Categorical| Alcohol consumption                     | -        |
 | MTRANS                            | Feature | Categorical| Mode of transportation                 | -        |
 | NObeyesdad                        | Target  | Categorical| Obesity classification                 | -        |
-
-
-- **Study Type:** Observational; each individual measured independently.
+: Dataset 2 Variables {tbl-q1-tb2}
 
 ---
 
 # 2. One-Sample T-Test: Wine Alcohol Content
+## 2.1 Research Question and Hypothesis
 **Research Question:** Is the average alcohol content of red and white wine greater than 10.5%?
 
 **Hypotheses:**  
-The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content is greater than 10.5%. 
-- \(H_0: \mu = 10.5\)  
-- \(H_a: \mu > 10.5\)  
+The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content is greater than 10.5%.  
 
+## 2.2 Assumptions
+
+## 2.3 Test 
 **Results:**  
 - Sample mean: 10.4918  
 - t-statistic: -0.5541  
@@ -279,7 +301,8 @@ The null hypothesis states that the population mean alcohol content is equal to 
 - One-tailed p-value: 0.7102  
 - 95% Confidence Interval: (10.4628, 10.5208)  
 
-**Conclusion:** Fail to reject \(H_0\). There is insufficient evidence that the mean alcohol content exceeds 10.5%.  
+## 2.4 Conclusion:** 
+Since the critical t-value was greater than alpha, we fail to reject the null hypothesis. There is insufficient evidence that the mean alcohol content exceeds 10.5%.  
 
 ---
 
@@ -290,16 +313,20 @@ The null hypothesis states that the population mean alcohol content is equal to 
 #| echo: false
 #| label: fig-q3-1
 #| fig-cap: "Bootstrap Distribution of Wine pH"
+#| fig-pos: "H"
 vals = bootstrap()
 plot_bootstrap(vals)
 ```
+
 ## 3.2 QQ Plot for Bootstrap
 ```{python}
 #| echo: false
 #| label: fig-q3-2
 #| fig-cap: "QQ Plot of Bootstrap Means (pH)"
+#| fig-pos: "H"
 bootstrap_qq(vals)
 ```
+
 ## 3.3 Bootstrap Confidence Interval
 ```{python, echo=False}
 #| echo: false
@@ -368,8 +395,6 @@ plot_resid_fitted(model)
 mtrans_df, caec_df = multiple_comparisons(model)
 ```
 
-**Conclusion:** Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
-
 
 ```{python}
 #| echo: false
@@ -377,7 +402,8 @@ mtrans_df, caec_df = multiple_comparisons(model)
 #| tbl-cap: "Tukey HSD Pairwise Comparison for MTRANS"
 mtrans_df
 ```
-**Conclusion:** Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
+
+**Conclusion:** From @fig-q5-1, the Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
 
 ```{python}
 #| echo: false
@@ -385,6 +411,8 @@ mtrans_df
 #| tbl-cap: "Tukey HSD Pairwise Comparison for CAEC"
 caec_df
 ```
+
+**Conclusion:** 
 
 ---
 
@@ -395,6 +423,6 @@ Cortez, Paulo, et al. "Wine Quality." UCI Machine Learning Repository, 2009, htt
 
 "Estimation of Obesity Levels Based On Eating Habits and Physical Condition ." UCI Machine Learning Repository, 2019, https://doi.org/10.24432/C5H31Z.
 
----
+---`
 
 # 7. Code Appendix
