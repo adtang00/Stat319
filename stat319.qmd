@@ -5,6 +5,7 @@ date: "December 9, 2025"
 format:
   pdf: 
     code-blocks: false
+    toc: true
   html:
     toc: true
     toc-location: left
@@ -219,7 +220,7 @@ def multiple_comparisons(model):
 - **Variables:** `fixed_acidity`, `volatile_acidity`, `citric_acid`, `residual_sugar`, `chlorides`, `free_sulfur_dioxide`, `total_sulfur_dioxide`, `density`, `ph`, `sulphates`, `alcohol`, `quality`, `color`  
 - **Study Type:** Observational; each wine sample measured independently.
 
-## Sampling Distribution of Density
+### Sampling Distribution of Density
 
 The following histogram shows the sampling distribution of the **sample mean of the `density` variable**.
 
@@ -236,7 +237,29 @@ plot_histogram_q1()
 - **Collection Year:** 2019  
 - **Description:** Estimation of obesity levels in individuals from Mexico, Peru, and Colombia, based on eating habits and physical condition.  
 - **Size:** 2111 rows, 16 columns  
-- **Variables:** `Gender`, `Age`, `Height`, `Weight`, `Family_history_with_overweight`, `FAVC`, `FCVC`, `NCP`, `CAEC`, `SMOKE`, `CH20`, `SCC`, `FAF`, `TUE`, `CALC`, `MTRANS`, `NObeyesdad`  
+- **Variables:** `Gender`, `Age`, `Height`, `Weight`, `Family_history_with_overweight`, `FAVC`, `FCVC`, `NCP`, `CAEC`, `SMOKE`, `CH20`, `SCC`, `FAF`, `TUE`, `CALC`, `MTRANS`, `NObeyesdad`
+
+| Variable Name                     | Role    | Type        | Description                           | Units     |
+|----------------------------------|---------|------------|---------------------------------------|----------|
+| Gender                            | Feature | Categorical| Biological sex                        | -        |
+| Age                               | Feature | Continuous | Age in years                           | Years    |
+| Height                            | Feature | Continuous | Height                                  | Meters   |
+| Weight                            | Feature | Continuous | Weight                                  | Kg       |
+| Family_history_with_overweight    | Feature | Binary     | Family history of overweight           | -        |
+| FAVC                              | Feature | Binary     | Frequent high-calorie food intake      | -        |
+| FCVC                              | Feature | Integer    | Frequency of vegetable consumption     | -        |
+| NCP                               | Feature | Continuous | Number of main meals per day           | Count    |
+| CAEC                              | Feature | Categorical| Snacking between meals                 | -        |
+| SMOKE                             | Feature | Binary     | Smokes or not                           | -        |
+| CH20                              | Feature | Binary     | Monitors calorie intake                | -        |
+| SCC                               | Feature | Continuous | Physical activity frequency            | Hours/Week |
+| FAF                               | Feature | Continuous | Daily screen/technology use            | Hours    |
+| TUE                               | Feature | Continuous | Daily electronics use                  | Hours    |
+| CALC                              | Feature | Categorical| Alcohol consumption                     | -        |
+| MTRANS                            | Feature | Categorical| Mode of transportation                 | -        |
+| NObeyesdad                        | Target  | Categorical| Obesity classification                 | -        |
+
+
 - **Study Type:** Observational; each individual measured independently.
 
 ---
@@ -262,7 +285,7 @@ The null hypothesis states that the population mean alcohol content is equal to 
 
 # 3. Bootstrap Approach: Wine pH
 
-## Bootstrap Distribution
+## 3.1 Bootstrap Distribution
 ```{python}
 #| echo: false
 #| label: fig-q3-1
@@ -270,14 +293,14 @@ The null hypothesis states that the population mean alcohol content is equal to 
 vals = bootstrap()
 plot_bootstrap(vals)
 ```
-## QQ Plot for Bootstrap
+## 3.2 QQ Plot for Bootstrap
 ```{python}
 #| echo: false
 #| label: fig-q3-2
 #| fig-cap: "QQ Plot of Bootstrap Means (pH)"
 bootstrap_qq(vals)
 ```
-## 95% Bootstrap Confidence Interval
+## 3.3 Bootstrap Confidence Interval
 ```{python, echo=False}
 #| echo: false
 # Run the bootstrap and compute CI
@@ -287,7 +310,7 @@ upper = np.percentile(vals, 97.5)
 (lower, upper)
 ```
 
-**Conclusion:** We are 95% confident that the true population mean pH lies between 3.215 and 3.222.  
+**Conclusion:** Using an alpha of 0.05, We are 95% confident that the true population mean pH lies between 3.215 and 3.222.  
 
 ---
 
@@ -344,12 +367,17 @@ plot_resid_fitted(model)
 #| echo: false
 mtrans_df, caec_df = multiple_comparisons(model)
 ```
+
+**Conclusion:** Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
+
+
 ```{python}
 #| echo: false
 #| label: tbl-q5-1
 #| tbl-cap: "Tukey HSD Pairwise Comparison for MTRANS"
 mtrans_df
 ```
+**Conclusion:** Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
 
 ```{python}
 #| echo: false
@@ -362,11 +390,11 @@ caec_df
 
 
 
-# References
+# 6. References
 Cortez, Paulo, et al. "Wine Quality." UCI Machine Learning Repository, 2009, https://doi.org/10.24432/C56S3T.
 
 "Estimation of Obesity Levels Based On Eating Habits and Physical Condition ." UCI Machine Learning Repository, 2019, https://doi.org/10.24432/C5H31Z.
 
 ---
 
-# Code Appendix
+# 7. Code Appendix
