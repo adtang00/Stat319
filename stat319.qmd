@@ -30,6 +30,10 @@ wine_quality = fetch_ucirepo(id=186)
 X = wine_quality.data.features
 y = wine_quality.data.targets
 
+estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544)    
+X2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
+y2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
+
 def plot_histogram_q1():
     data = X["density"].values
 
@@ -45,6 +49,19 @@ def plot_histogram_q1():
     plt.hist(sample_means, bins=30, edgecolor='black')
     plt.xlabel("Sample Mean of Density")
     #plt.title("Sampling Distribution of Sample Mean (Density)")
+    plt.show()
+
+def plot_histogram_q2():
+    data = X2['Weight'].values
+    sample_size = 30
+    num_samples = 5000  
+    sample_means = []
+    for i in range(num_samples):
+        sample = np.random.choice(data, size=sample_size, replace=True)
+        sample_means.append(np.mean(sample))
+    plt.hist(sample_means, bins=30, edgecolor='black')
+    plt.xlabel("Sample Mean of Weight")
+    #plt.title("Sampling Distribution of Sample Mean (Weight)")
     plt.show()
 
 def bootstrap():
@@ -74,11 +91,11 @@ def bootstrap_qq(vals):
 
 def mult_comparisons():
     # fetch dataset 
-    estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
+    #estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
     
     # data (as pandas dataframes) 
-    X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
-    y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
+    #X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
+    #y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
     
     # metadata 
     #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.metadata) 
@@ -86,8 +103,8 @@ def mult_comparisons():
     # variable information 
     #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.variables) 
 
-    df = pd.concat([X, y], axis=1)
-    df.columns = list(X.columns) + list(y.columns)
+    df = pd.concat([X2, y2], axis=1)
+    df.columns = list(X2.columns) + list(y2.columns)
 
     df['MTRANS_str'] = df['MTRANS'].astype(str)
     df['CAEC_str'] = df['CAEC'].astype(str)
@@ -212,7 +229,7 @@ def multiple_comparisons(model):
 
 # 1. Dataset Overview
 
-## 1.1 Wine Quality Dataset
+## A. Wine Quality Dataset
 
 - **Collection Year:** 2009
 - **Study Type:** Observational; each wine sample measured independently.
@@ -239,7 +256,7 @@ def multiple_comparisons(model):
 
 
 
-### Sampling Distribution of Density
+## Sampling Distribution of Density
 
 The following histogram shows the sampling distribution of the **sample mean of the `density` variable**.
 
@@ -253,7 +270,7 @@ plot_histogram_q1()
 @fig-q1 shows the sampling distribution of the sample mean of wine densities. The shape of the sampling distribution is approximately normal with little to no skew.
 
 
-## 1.2 Obesity Dataset
+## B. Obesity Dataset
 
 - **Collection Year:** 2019
 - **Study Type:** Observational; each individual measured independently.
@@ -282,14 +299,24 @@ plot_histogram_q1()
 | NObeyesdad                        | Target  | Categorical| Obesity classification                 | -        |
 : Dataset 2 Variables {tbl-q1-tb2}
 
+## Sampling Distribution of Weight
+```{python}
+#| echo: false
+#| label: fig-q2
+#| fig-pos: "H"
+#| fig-cap: "Sampling Distribution of Sample Mean (Weight)"
+plot_histogram_q2()
+```
+
+@fig-q2 shows the sampling distribution of the sample mean of individual weights. 
+
 ---
 
 # 2. One-Sample T-Test: Wine Alcohol Content
 ## 2.1 Research Question and Hypothesis
 **Research Question:** Is the average alcohol content of red and white wine greater than 10.5%?
 
-**Hypotheses:**  
-The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content is greater than 10.5%.  
+**Hypotheses:**  The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content of red and white wine is greater than 10.5%.  
 
 ## 2.2 Assumptions
 

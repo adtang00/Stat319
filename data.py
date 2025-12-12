@@ -14,6 +14,10 @@ wine_quality = fetch_ucirepo(id=186)
 X = wine_quality.data.features
 y = wine_quality.data.targets
 
+estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544)    
+X2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
+y2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
+
 def plot_histogram_q1():
     data = X["density"].values
 
@@ -29,6 +33,19 @@ def plot_histogram_q1():
     plt.hist(sample_means, bins=30, edgecolor='black')
     plt.xlabel("Sample Mean of Density")
     plt.title("Sampling Distribution of Sample Mean (Density)")
+    plt.show()
+
+def plot_histogram_q2():
+    data = X2['Weight'].values
+    sample_size = 30
+    num_samples = 5000  
+    sample_means = []
+    for i in range(num_samples):
+        sample = np.random.choice(data, size=sample_size, replace=True)
+        sample_means.append(np.mean(sample))
+    plt.hist(sample_means, bins=30, edgecolor='black')
+    plt.xlabel("Sample Mean of Weight")
+    plt.title("Sampling Distribution of Sample Mean (Weight)")
     plt.show()
 
 def bootstrap():
@@ -58,11 +75,11 @@ def bootstrap_qq(vals):
 
 def interaction_plot_model():
     # fetch dataset 
-    estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
+    #estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
     
     # data (as pandas dataframes) 
-    X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
-    y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
+    #X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
+    #y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
     
     # metadata 
     #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.metadata) 
@@ -70,8 +87,8 @@ def interaction_plot_model():
     # variable information 
     #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.variables) 
 
-    df = pd.concat([X, y], axis=1)
-    df.columns = list(X.columns) + list(y.columns)
+    df = pd.concat([X2, y2], axis=1)
+    df.columns = list(X2.columns) + list(y2.columns)
 
     df['MTRANS_str'] = df['MTRANS'].astype(str)
     df['CAEC_str'] = df['CAEC'].astype(str)
