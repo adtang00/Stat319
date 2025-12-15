@@ -5,9 +5,11 @@ date: "December 9, 2025"
 format:
   pdf: 
     code-blocks: false
+    code-overflow: wrap
     toc: true
   html:
     toc: true
+    code-overflow: wrap
     toc-location: left
     code-fold: true
     theme: cosmo
@@ -206,8 +208,10 @@ def multiple_comparisons(model):
     df = model.model.data.frame.copy()
 
     # Convert factors to string for Tukey labels
-    df['MTRANS_str'] = df['MTRANS'].astype(str)
-    df['CAEC_str'] = df['CAEC'].astype(str)
+    #df['MTRANS_str'] = df['MTRANS'].astype(str)
+    #df['CAEC_str'] = df['CAEC'].astype(str)
+    df['MTRANS_str'] = df['MTRANS'].astype(str).str.replace('_', ' ')
+    df['CAEC_str'] = df['CAEC'].astype(str).str.replace('_', ' ')
 
     # --- Tukey for MTRANS ---
     tukey_mtrans = pairwise_tukeyhsd(
@@ -222,6 +226,8 @@ def multiple_comparisons(model):
         columns=tukey_mtrans._results_table.data[0]  # use header row
     )
 
+    mtrans_df = mtrans_df.rename(columns={'group1': 'Transportion A', 'group2': 'Transportion B'})
+
     # --- Tukey for CAEC ---
     tukey_caec = pairwise_tukeyhsd(
         endog=df['Weight'],
@@ -233,6 +239,8 @@ def multiple_comparisons(model):
         data=tukey_caec._results_table.data[1:],
         columns=tukey_caec._results_table.data[0]
     )
+    caec_df = caec_df.rename(columns={'group1': 'CAEC A', 'group2': 'CAEC B'})
+
     return mtrans_df, caec_df
 
 # --------------------------------
@@ -433,28 +441,29 @@ def anova_analysis():
 
 ## A. Wine Quality Dataset
 
-- **Collection Year:** 2009
-- **Study Type:** Observational; each wine sample measured independently.
+- **Collection Year:** Dataset was collected in 2009.
+- **Study Type:** The study is observational. Each wine was independently sampled.
 - **Description:** Physiochemical properties for red and white Portuguese "Vinho Verde" wines.  
 - **Size:** 6497 rows, 12 columns  
 - **Variables:** `fixed_acidity`, `volatile_acidity`, `citric_acid`, `residual_sugar`, `chlorides`, `free_sulfur_dioxide`, `total_sulfur_dioxide`, `density`, `ph`, `sulphates`, `alcohol`, `quality`, `color`  
 
-| Variable Name           | Role    | Type        | Description                   |
-|-------------------------|---------|-------------|-------------------------------|
-| fixed_acidity          | Feature | Continuous  |                               |
-| volatile_acidity       | Feature | Continuous  |                               |
-| citric_acid            | Feature | Continuous  |                               |
-| residual_sugar         | Feature | Continuous  |                               |
-| chlorides              | Feature | Continuous  |                               |
-| free_sulfur_dioxide    | Feature | Continuous  |                               |
-| total_sulfur_dioxide   | Feature | Continuous  |                               |
-| density                | Feature | Continuous  |                               |
-| pH                     | Feature | Continuous  |                               |
-| sulphates              | Feature | Continuous  |                               |
-| alcohol                | Feature | Continuous  |                               |
-| quality                | Target  | Integer     | score between 0 and 10        |
-| color                  | Other   | Categorical | red or white                  |
+| Variable Name           | Type        | Description                   |
+|-------------------------|-------------|-------------------------------|
+| fixed_acidity           | Continuous  |                               |
+| volatile_acidity        | Continuous  |                               |
+| citric_acid             | Continuous  |                               |
+| residual_sugar          | Continuous  |                               |
+| chlorides               | Continuous  |                               |
+| free_sulfur_dioxide     | Continuous  |                               |
+| total_sulfur_dioxide    | Continuous  |                               |
+| density                 | Continuous  |                               |
+| pH                      | Continuous  |                               |
+| sulphates               | Continuous  |                               |
+| alcohol                 | Continuous  |                               |
+| quality                 | Integer     | score between 0 and 10        |
+| color                   | Categorical | red or white                  |
 : Dataset 1 Variables {tbl-q1-tb1}
+
 
 
 
@@ -469,37 +478,38 @@ The following histogram shows the sampling distribution of the **sample mean of 
 plot_histogram_q1()
 ```
 
-@fig-q1 shows the sampling distribution of the sample mean of wine densities. The shape of the sampling distribution is approximately normal with little to no skew.
+@fig-q1 shows the sampling distribution of the sample mean of wine densities. There is a heavy clustering with similar frequencies from 0.9945 to 0.995 g/ml. The right tail appears thinner than the left tail but with small frequencies. The shape of the sampling distribution is approximately normal with little to no skew.
 
 
 ## B. Obesity Dataset
 
-- **Collection Year:** 2019
-- **Study Type:** Observational; each individual measured independently.
+- **Collection Year:** The dataset was collected in 2019.
+- **Study Type:** The study is observational, each person was measured independently. 
 - **Description:** Estimation of obesity levels in individuals from Mexico, Peru, and Colombia, based on eating habits and physical condition.  
 - **Size:** 2111 rows, 16 columns  
 - **Variables:** `Gender`, `Age`, `Height`, `Weight`, `Family_history_with_overweight`, `FAVC`, `FCVC`, `NCP`, `CAEC`, `SMOKE`, `CH20`, `SCC`, `FAF`, `TUE`, `CALC`, `MTRANS`, `NObeyesdad`
 
-| Variable Name                     | Role    | Type        | Description                           | Units     |
-|----------------------------------|---------|------------|---------------------------------------|----------|
-| Gender                            | Feature | Categorical| Biological sex                        | -        |
-| Age                               | Feature | Continuous | Age in years                           | Years    |
-| Height                            | Feature | Continuous | Height                                  | Meters   |
-| Weight                            | Feature | Continuous | Weight                                  | Kg       |
-| Family_history_with_overweight    | Feature | Binary     | Family history of overweight           | -        |
-| FAVC                              | Feature | Binary     | Frequent high-calorie food intake      | -        |
-| FCVC                              | Feature | Integer    | Frequency of vegetable consumption     | -        |
-| NCP                               | Feature | Continuous | Number of main meals per day           | Count    |
-| CAEC                              | Feature | Categorical| Snacking between meals                 | -        |
-| SMOKE                             | Feature | Binary     | Smokes or not                           | -        |
-| CH20                              | Feature | Binary     | Monitors calorie intake                | -        |
-| SCC                               | Feature | Continuous | Physical activity frequency            | Hours/Week |
-| FAF                               | Feature | Continuous | Daily screen/technology use            | Hours    |
-| TUE                               | Feature | Continuous | Daily electronics use                  | Hours    |
-| CALC                              | Feature | Categorical| Alcohol consumption                     | -        |
-| MTRANS                            | Feature | Categorical| Mode of transportation                 | -        |
-| NObeyesdad                        | Target  | Categorical| Obesity classification                 | -        |
+| Variable Name                     | Type        | Description                           | Units       |
+|----------------------------------|------------|---------------------------------------|------------|
+| Gender                            | Categorical| Biological sex                        | -          |
+| Age                               | Continuous | Age in years                           | Years      |
+| Height                            | Continuous | Height                                  | Meters     |
+| Weight                            | Continuous | Weight                                  | Kg         |
+| Family_history_with_overweight    | Binary     | Family history of overweight           | -          |
+| FAVC                              | Binary     | Frequent high-calorie food intake      | -          |
+| FCVC                              | Integer    | Frequency of vegetable consumption     | -          |
+| NCP                               | Continuous | Number of main meals per day           | Count      |
+| CAEC                              | Categorical| Snacking between meals                 | -          |
+| SMOKE                             | Binary     | Smokes or not                           | -          |
+| CH20                              | Binary     | Monitors calorie intake                | -          |
+| SCC                               | Continuous | Physical activity frequency            | Hours/Week |
+| FAF                               | Continuous | Daily screen/technology use            | Hours      |
+| TUE                               | Continuous | Daily electronics use                  | Hours      |
+| CALC                              | Categorical| Alcohol consumption                     | -          |
+| MTRANS                            | Categorical| Mode of transportation                 | -          |
+| NObeyesdad                        | Categorical| Obesity classification                 | -          |
 : Dataset 2 Variables {tbl-q1-tb2}
+
 
 ## Sampling Distribution of Weight
 ```{python}
@@ -510,7 +520,7 @@ plot_histogram_q1()
 plot_histogram_q2()
 ```
 
-@fig-q2 shows the sampling distribution of the sample mean of individual weights. 
+@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell-shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg, with a slightly larger frequency on the left of the center than the right. There is no noticeable skewness. 
 
 ---
 
@@ -524,14 +534,10 @@ plot_histogram_q2()
 
 ## 2.3 Test 
 **Results:**  
-- Sample mean: 10.4918  
-- t-statistic: -0.5541  
-- Critical t-value (α = 0.05): 1.6451  
-- One-tailed p-value: 0.7102  
-- 95% Confidence Interval: (10.4628, 10.5208)  
+In the one-sample t-test, the sample mean was 10.492, with a corresponding t-statistic of −0.5541. At a significance level of α = 0.05, the critical t-value for a one-tailed test was 1.6451. The resulting one-tailed p-value was 0.7102. Since the test statistic does not exceed the critical value and the p-value is greater than α, there is insufficient evidence to reject the null hypothesis. Lastly, the 95% confidence interval for the population mean was (10.4628, 10.5208). 
 
-## 2.4 Conclusion:** 
-Since the critical t-value was greater than alpha, we fail to reject the null hypothesis. There is insufficient evidence that the mean alcohol content exceeds 10.5%.  
+## 2.4 Conclusion:
+Since the critical t-value was greater than $\alpha$ , we fail to reject the null hypothesis. There is insufficient evidence that the mean alcohol content exceeds 10.5%.  
 
 ---
 
@@ -563,10 +569,10 @@ bootstrap_qq(vals)
 #vals = bootstrap()
 lower = np.percentile(vals, 2.5)
 upper = np.percentile(vals, 97.5)
-(lower, upper)
+print("The bootstrap test CI was calculated to be " + "(" + str(lower) + ", " + str(upper) +")")
 ```
 
-**Conclusion:** Using an alpha of 0.05, We are 95% confident that the true population mean pH lies between 3.215 and 3.222.  
+**Conclusion:** Using an $\alpha$ of 0.05, We are 95% confident that the true population mean pH lies between 3.215 and 3.222.  
 
 ---
 
@@ -593,7 +599,7 @@ upper = np.percentile(vals, 97.5)
 model = mult_comparisons()
 ```
 
-- **Interpretation:** Based on @fig-q5-1, Weight differs across the different MTRANS (Method of Transportation) categories. The lines for different CAEC overlap, suggesting a relationship exists between MTRANS and CAEC levels.
+- **Interpretation:** Based on @fig-q5-1, Weight differs across the different MTRANS (Method of Transportation) categories. The lines for different CAEC (Snacking between Meals) overlap, suggesting a relationship exists between MTRANS and CAEC levels.
 
 ## 5.2 QQ Plot and Residual Analysis:
 ```{python}
@@ -604,9 +610,10 @@ model = mult_comparisons()
 plot_resid_fitted(model)
 ```
 
-  - QQ plot shows approximate normality as the data falls around the line.  
-  - Residual plot shows no clear pattern.  
-- **Conclusion:** ANOVA assumptions satisfied (normality, independence, equal variance).  
+  - The left plot in @fig-q5-2 is the QQ plot, which shows approximate normality as the data falls around the line. There is a single datapoint on the far right tail that is deviated from the normal line, indicating a potential outlier. On the left end of the normal line, the datapoints appear to have a curvature away from the normal. 
+  - The right plot in @fig-q5-2 shows the corresponding residual plot. The datapoints shows no clear pattern, however there is a singular point that has an abnormally high residual around (60, 120), which is most likely the outlier that was observed in the QQ plot. 
+
+- **Conclusion:** Overall, the ANOVA assumptions of normality, independence, and equal variance are satisfied.  
 
 ## 5.3 F-Tests for Factors
 
@@ -632,7 +639,17 @@ mtrans_df, caec_df = multiple_comparisons(model)
 mtrans_df
 ```
 
-**Conclusion:** From @fig-q5-1, the Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
+- **Transportion A, Transportion B:** The two transportation categories being compared.
+
+- **meandiff**: Difference in group means (B minus A).
+
+- **p-adj**: P-value adjusted for multiple comparisons to control the family-wise error rate.
+
+- **lower, upper**: Lower and upper bounds of the 95% confidence interval for the mean difference.
+
+- **reject**: Indicates whether the null hypothesis of equal means is rejected at $\alpha = 0.05$.
+
+**Conclusion:** From @tbl-q5-1, the Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
 
 ```{python}
 #| echo: false
@@ -640,6 +657,16 @@ mtrans_df
 #| tbl-cap: "Tukey HSD Pairwise Comparison for CAEC"
 caec_df
 ```
+
+- **CAEC A, CAEC B:** The two frequencies of snacking categories being compared.
+
+- **meandiff**: Difference in group means (B minus A).
+
+- **p-adj**: P-value adjusted for multiple comparisons to control the family-wise error rate.
+
+- **lower, upper**: Lower and upper bounds of the 95% confidence interval for the mean difference.
+
+- **reject**: Indicates whether the null hypothesis of equal means is rejected at $\alpha = 0.05$.
 
 **Conclusion:** 
 
@@ -658,8 +685,12 @@ Cortez, Paulo, et al. "Wine Quality." UCI Machine Learning Repository, 2009, htt
 ```{python}
 #| echo: false
 #| output: asis
-
-print("```python")
-print(open("data.py").read())
-print("```")
+#| code-overflow: wrap
+import textwrap
+with open("data.py") as f:
+    code = f.read()
+wrapped_code = "\n".join(textwrap.fill(line, width=80) for line in code.splitlines())
+print(r"\begin{verbatim}")
+print(wrapped_code)
+print(r"\end{verbatim}")
 ```
