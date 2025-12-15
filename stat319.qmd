@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 from statsmodels.graphics.factorplots import interaction_plot
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+import seaborn as sns
 
 # Fetch the Wine Quality dataset
 wine_quality = fetch_ucirepo(id=186)
@@ -34,6 +35,9 @@ estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fet
 X2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
 y2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
 
+# --------------------------------
+# Sampling Distributions (Both Datasets)
+# --------------------------------
 def plot_histogram_q1():
     data = X["density"].values
 
@@ -64,6 +68,9 @@ def plot_histogram_q2():
     #plt.title("Sampling Distribution of Sample Mean (Weight)")
     plt.show()
 
+# --------------------------------
+# Bootstrap (Wine Quality Dataset)
+# --------------------------------
 def bootstrap():
     #wine_quality = fetch_ucirepo(id=186)
     X = wine_quality.data.features
@@ -89,6 +96,9 @@ def bootstrap_qq(vals):
     plt.title("QQ Plot for Bootstrap Means of pH")
     plt.show()
 
+# --------------------------------
+# ANOVA and Interaction Model (Obesity Dataset)
+# --------------------------------
 def mult_comparisons():
     # fetch dataset 
     #estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
@@ -225,6 +235,198 @@ def multiple_comparisons(model):
     )
     return mtrans_df, caec_df
 
+# --------------------------------
+# Summary Statistics (Both Datasets)
+# --------------------------------
+def quantitative_summary(df, title):
+    number_df = df.select_dtypes(include="number")
+
+    # compute summary statistics
+    summary = pd.DataFrame({
+
+        # Measures of Central Tendency
+        "Mean": number_df.mean(),                           # find means
+        "Median": number_df.median(),                       # find medians
+        "Mode": number_df.mode().iloc[0],                   # find modes
+
+        # Measures of Variability
+        "Range": number_df.max() - number_df.min(),                 # find ranges
+        "Variance": number_df.var(),                                # find variances
+        "Standard Deviation": number_df.std(),                      # find standard deviations
+        "IQR": number_df.quantile(0.75) - number_df.quantile(0.25)  # find interquartile ranges
+    })
+
+    # create figure and axes
+    figure, axes = plt.subplots(figsize=(14, 6))
+    axes.axis("off")    # hide plot axes
+
+    # create summary table
+    summary_table = plt.table(
+        cellText=summary.round(4).values,   # round 4 decimal places
+        rowLabels=summary.index,            # label rows
+        colLabels=summary.columns,          # label columns
+        loc="center",                       # center table
+        cellLoc="center",                   # center text
+    )
+
+    # size table
+    summary_table.scale(1, 2)
+
+    # add title
+    plt.title(title)
+    plt.show()
+
+
+def category_summary(df, title, wine_flag=False):
+
+    # For wine quality dataset
+    if wine_flag:
+        category_columns = df.columns
+
+    # For obesity dataset
+    else:
+        category_columns = df.select_dtypes(exclude="number").columns
+
+    # categorical variable summary
+    for col in category_columns:
+        categorical_summary = pd.DataFrame({
+            "Quality Score": df[col].value_counts().sort_index().index,       # find quality scores
+            "Frequency": df[col].value_counts().sort_index(),                 # find frequencies
+            "Proportion": df[col].value_counts(normalize=True).sort_index()   # find proportions
+        })
+
+        # create figure and axes
+        figure, axes = plt.subplots(figsize=(14, 6))
+        axes.axis("off")    # hide plot axes
+
+        # create summary table
+        summary_table = plt.table(
+            cellText=categorical_summary.round(4).values,   # round 4 decimal places
+            colLabels=categorical_summary.columns,          # label columns
+            loc="center",                                   # center table
+            cellLoc="center",                               # center text
+        )
+
+        # size table
+        summary_table.scale(1, 3)
+
+        # add title
+        plt.title(f"{title}: {col}")
+        plt.show()
+
+
+# --------------------------------
+# One Sample Test (Wine Quality Dataset)
+# --------------------------------
+def alcohol_t_test():
+    # get variable of interest
+    alcohol_content = X["alcohol"].values
+
+    # Hypothesized population mean
+    pop_mean = 10.5
+
+    # Sample statistics
+    n = len(alcohol_content)
+    df = n - 1
+    sample_mean = np.mean(alcohol_content)
+    sample_std = np.std(alcohol_content, ddof=1)
+
+    # Compute t-statistic manually
+    t_statistic = (sample_mean - pop_mean) / (sample_std / np.sqrt(n))
+
+    # Find t-critical value for one-tailed test
+    alpha = 0.05
+    t_crit = stats.t.ppf(1 - alpha, df)
+
+    # Print results
+    print(f"Sample mean: {sample_mean:.4f}")
+    print(f"T-statistic: {t_statistic:.4f}")
+    print(f"T-critical (one-tailed, alpha={alpha}): {t_crit:.4f}")
+
+    # Decision based on t-critical
+    if t_statistic > t_crit:
+        print("Reject the null hypothesis based on t-critical value.")
+    else:
+        print("Fail to reject the null hypothesis based on t-critical value.")
+
+    # Also show p-value for reference
+    t_stat, p_value_2tail = stats.ttest_1samp(a=alcohol_content, popmean=pop_mean)
+
+    # find one-tailed p-value
+    if t_statistic > 0:
+        p_value_1tail = p_value_2tail / 2
+    else:
+        p_value_1tail = 1 - (p_value_2tail / 2)
+
+    print(f"\nOne-Tailed P-value: {p_value_1tail:.4f}")
+
+    if p_value_1tail < alpha:
+        print("Reject the null hypothesis based on p-value.")
+    else:
+        print("Fail to reject the null hypothesis based on p-value.")
+
+    # find 95% confidence interval
+    margin_error = (stats.t.ppf(1 - 0.05 / 2, df)) * (sample_std / np.sqrt(n))
+    low_interval = sample_mean - margin_error
+    high_interval = sample_mean + margin_error
+
+    print()
+    print(f"95% Confidence Interval:\n({low_interval:.4f}, {high_interval:.4f})")
+
+
+# --------------------------------
+# ANOVA (Wine Quality Dataset)
+# --------------------------------
+def anova_analysis():
+    # combine X and Y dataframes
+    combined_data = X.join(y)
+
+    # Run ANOVA test
+    anova_model = smf.ols("alcohol ~ C(quality)", data=combined_data).fit()
+    anova_table = sm.stats.anova_lm(anova_model, typ=2)
+
+    # print table
+    print(anova_table)
+
+    # create figure and axes
+    figure, axes = plt.subplots(figsize=(14, 6))
+    axes.axis("off")  # hide plot axes
+
+    # create summary table
+    anova_table_output = plt.table(
+        cellText=anova_table.round(4).values,  # round 4 decimal places
+        rowLabels=["Quality", "Residual Error"],  # label rows
+        colLabels=["Sum of Squares", "Degrees of Freedom", "F-Statistic", "P-Value"],  # label columns
+        loc="center",  # center table
+        cellLoc="center",  # center text
+    )
+
+    # size table
+    anova_table_output.scale(1, 2)
+
+    # add title
+    plt.title("ANOVA Table: Alcohol Content by Wine Quality")
+    plt.show()
+
+    # find rejection region
+    alpha = 0.05
+    df1 = 6
+    df2 = 6490
+
+    f_critical_value = stats.f.ppf(1 - alpha, df1, df2)
+    print(f"F-Critical Value: {f_critical_value}")
+
+    print(f"\nReject H0 if F > {f_critical_value:.4f}")
+
+    # residual check with QQ-plot
+    sm.qqplot(anova_model.resid, line="45")
+    plt.title("QQ-Plot of ANOVA Residuals")
+    plt.show()
+
+    # equal variance check with boxplots
+    sns.boxplot(x="quality", y="alcohol", data=combined_data)
+    plt.title("Alcohol Content Through Alcohol Quality Levels")
+    plt.show()
 ```
 
 # 1. Dataset Overview
@@ -453,3 +655,11 @@ Cortez, Paulo, et al. "Wine Quality." UCI Machine Learning Repository, 2009, htt
 ---`
 
 # 7. Code Appendix
+```{python}
+#| echo: false
+#| output: asis
+
+print("```python")
+print(open("data.py").read())
+print("```")
+```

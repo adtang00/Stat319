@@ -1,4 +1,4 @@
-from ucimlrepo import fetch_ucirepo 
+from ucimlrepo import fetch_ucirepo
 import pandas as pd
 from scipy import stats
 import numpy as np
@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from statsmodels.graphics.factorplots import interaction_plot
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+import seaborn as sns
 
 # Fetch the Wine Quality dataset
 wine_quality = fetch_ucirepo(id=186)
@@ -14,10 +15,20 @@ wine_quality = fetch_ucirepo(id=186)
 X = wine_quality.data.features
 y = wine_quality.data.targets
 
-estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544)    
-X2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
-y2 = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
+estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = (
+    fetch_ucirepo(id=544)
+)
+X2 = (
+    estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features
+)
+y2 = (
+    estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets
+)
 
+
+# --------------------------------
+# Sampling Distributions (Both Datasets)
+# --------------------------------
 def plot_histogram_q1():
     data = X["density"].values
 
@@ -30,28 +41,33 @@ def plot_histogram_q1():
         sample = np.random.choice(data, size=sample_size, replace=True)
         sample_means.append(np.mean(sample))
 
-    plt.hist(sample_means, bins=30, edgecolor='black')
+    plt.hist(sample_means, bins=30, edgecolor="black")
     plt.xlabel("Sample Mean of Density")
-    plt.title("Sampling Distribution of Sample Mean (Density)")
+    # plt.title("Sampling Distribution of Sample Mean (Density)")
     plt.show()
 
+
 def plot_histogram_q2():
-    data = X2['Weight'].values
+    data = X2["Weight"].values
     sample_size = 30
-    num_samples = 5000  
+    num_samples = 5000
     sample_means = []
     for i in range(num_samples):
         sample = np.random.choice(data, size=sample_size, replace=True)
         sample_means.append(np.mean(sample))
-    plt.hist(sample_means, bins=30, edgecolor='black')
+    plt.hist(sample_means, bins=30, edgecolor="black")
     plt.xlabel("Sample Mean of Weight")
-    plt.title("Sampling Distribution of Sample Mean (Weight)")
+    # plt.title("Sampling Distribution of Sample Mean (Weight)")
     plt.show()
 
+
+# --------------------------------
+# Bootstrap (Wine Quality Dataset)
+# --------------------------------
 def bootstrap():
-    wine_quality = fetch_ucirepo(id=186)
+    # wine_quality = fetch_ucirepo(id=186)
     X = wine_quality.data.features
-    df = X['pH'].values
+    df = X["pH"].values
 
     iter = 10000
     runs = np.zeros(iter)
@@ -61,81 +77,94 @@ def bootstrap():
         runs[i] = np.mean(sample)
     return runs
 
+
 def plot_bootstrap(runs):
-    plt.hist(x = runs, bins = 'auto', alpha = 0.7)
-    plt.xlabel('Mean of ph')
-    plt.ylabel('Frequency')
-    plt.title('Bootstrap Distribution of Mean ph')
+    plt.hist(x=runs, bins="auto", alpha=0.7)
+    plt.xlabel("Mean of ph")
+    plt.ylabel("Frequency")
+    plt.title("Bootstrap Distribution of Mean ph")
     plt.show()
+
 
 def bootstrap_qq(vals):
     stats.probplot(vals, dist="norm", plot=plt)
     plt.title("QQ Plot for Bootstrap Means of pH")
     plt.show()
 
-def interaction_plot_model():
-    # fetch dataset 
-    #estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
-    
-    # data (as pandas dataframes) 
-    #X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
-    #y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
-    
-    # metadata 
-    #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.metadata) 
-    
-    # variable information 
-    #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.variables) 
+
+# --------------------------------
+# ANOVA and Interaction Model (Obesity Dataset)
+# --------------------------------
+def mult_comparisons():
+    # fetch dataset
+    # estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544)
+
+    # data (as pandas dataframes)
+    # X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features
+    # y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets
+
+    # metadata
+    # print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.metadata)
+
+    # variable information
+    # print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.variables)
 
     df = pd.concat([X2, y2], axis=1)
     df.columns = list(X2.columns) + list(y2.columns)
 
-    df['MTRANS_str'] = df['MTRANS'].astype(str)
-    df['CAEC_str'] = df['CAEC'].astype(str)
+    df["MTRANS_str"] = df["MTRANS"].astype(str)
+    df["CAEC_str"] = df["CAEC"].astype(str)
 
+    # Interaction plot
+    fig, ax = plt.subplots(figsize=(12, 8))
+    interaction_plot(
+        df["MTRANS"],
+        df["CAEC"],
+        df["Weight"],
+        colors=["red", "blue", "green", "orange"],
+        markers=["o", "s", "^", "D"],
+        ms=8,
+        ax=ax,  # pass axes to avoid auto (a)/(b)
+    )
+    ax.set_xlabel("MTRANS")
+    ax.set_ylabel("Weight (kg)")
+    # ax.set_title('Interaction Plot: Weight by MTRANS and CAEC')
 
-    # 3️. Interaction plot
-    plt.figure(figsize=(12,8))
-    interaction_plot(df['MTRANS'], df['CAEC'], df['Weight'],
-                     colors=['red','blue','green','orange'], markers=['o','s','^','D'], ms=8)
-    plt.xlabel('MTRANS')
-    plt.ylabel('Weight(kg)')
-    plt.title('Interaction Plot: Weight by MTRANS and CAEC')
     plt.show()
 
     model = smf.ols("Weight ~ C(MTRANS) + C(CAEC)", data=df).fit()
-    #anova_table = sm.stats.anova_lm(model, typ=2)
-    #print(anova_table)
+
     return model
+
 
 def plot_resid_fitted(model):
     residuals = model.resid
     fitted = model.fittedvalues
     # Create plots
-    fig, ax = plt.subplots(1, 2, figsize=(12,5))
+    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
 
     # 1. Q-Q plot of residuals
-    sm.qqplot(residuals, line='s', ax=ax[0])
-    ax[0].set_title('Q-Q Plot of Residuals')
+    sm.qqplot(residuals, line="s", ax=ax[0])
+    ax[0].set_title("QQ Plot of Residuals")
 
     # 2. Residuals vs Fitted plot
     ax[1].scatter(fitted, residuals)
-    ax[1].axhline(0, color='red', linestyle='--')
-    ax[1].set_xlabel('Fitted values')
-    ax[1].set_ylabel('Residuals')
-    ax[1].set_title('Residuals vs Fitted')
+    ax[1].axhline(0, color="red", linestyle="--")
+    ax[1].set_xlabel("Fitted values")
+    ax[1].set_ylabel("Residuals")
+    ax[1].set_title("Residuals vs Fitted")
 
     plt.tight_layout()
     plt.show()
 
+
 def hypothesis_test(model):
     anova_table = sm.stats.anova_lm(model, typ=2)
-
     # 4. Hypothesis test for equality of means
     # Calculate MSA and MSB
-    msa = anova_table['sum_sq']['C(MTRANS)'] / anova_table['df']['C(MTRANS)']
-    msb = anova_table['sum_sq']['C(CAEC)'] / anova_table['df']['C(CAEC)']
-    mse = anova_table['sum_sq']['Residual'] / anova_table['df']['Residual']
+    msa = anova_table["sum_sq"]["C(MTRANS)"] / anova_table["df"]["C(MTRANS)"]
+    msb = anova_table["sum_sq"]["C(CAEC)"] / anova_table["df"]["C(CAEC)"]
+    mse = anova_table["sum_sq"]["Residual"] / anova_table["df"]["Residual"]
 
     # Calculate F-statistics
     f_stat_a = msa / mse
@@ -145,28 +174,43 @@ def hypothesis_test(model):
 
     # Critical F-value
     alpha = 0.05
-    f_crit_a = stats.f.ppf(1 - alpha, anova_table['df']['C(MTRANS)'], anova_table['df']['Residual'])
-    f_crit_b = stats.f.ppf(1 - alpha, anova_table['df']['C(CAEC)'], anova_table['df']['Residual'])
+    f_crit_a = stats.f.ppf(
+        1 - alpha, anova_table["df"]["C(MTRANS)"], anova_table["df"]["Residual"]
+    )
+    f_crit_b = stats.f.ppf(
+        1 - alpha, anova_table["df"]["C(CAEC)"], anova_table["df"]["Residual"]
+    )
     print(f"Critical F-value for MTRANS: {f_crit_a}")
     print(f"Critical F-value for CAEC: {f_crit_b}")
 
     # p-values
-    p_value_a = 1 - stats.f.cdf(f_stat_a, anova_table['df']['C(MTRANS)'], anova_table['df']['Residual'])
-    p_value_b = 1 - stats.f.cdf(f_stat_b, anova_table['df']['C(CAEC)'], anova_table['df']['Residual'])
-    print(f"P-value for MTRANS: {p_value_a}")   
+    p_value_a = 1 - stats.f.cdf(
+        f_stat_a, anova_table["df"]["C(MTRANS)"], anova_table["df"]["Residual"]
+    )
+    p_value_b = 1 - stats.f.cdf(
+        f_stat_b, anova_table["df"]["C(CAEC)"], anova_table["df"]["Residual"]
+    )
+    print(f"P-value for MTRANS: {p_value_a}")
     print(f"P-value for CAEC: {p_value_b}")
 
     # Conclusion
     if f_stat_a > f_crit_a:
-        print("Reject null hypothesis for MTRANS: At least one group mean is different.")
+        print(
+            "Reject null hypothesis for MTRANS: At least one group mean is different."
+        )
     else:
-        print("Fail to reject null hypothesis for MTRANS: No significant difference between group means.") 
+        print(
+            "Fail to reject null hypothesis for MTRANS: No significant difference between group means."
+        )
     if f_stat_b > f_crit_b:
         print("Reject null hypothesis for CAEC: At least one group mean is different.")
     else:
-        print("Fail to reject null hypothesis for CAEC: No significant difference between group means.")
+        print(
+            "Fail to reject null hypothesis for CAEC: No significant difference between group means."
+        )
 
     return anova_table
+
 
 def multiple_comparisons(model):
     from statsmodels.stats.multicomp import pairwise_tukeyhsd
@@ -176,45 +220,268 @@ def multiple_comparisons(model):
     df = model.model.data.frame.copy()
 
     # Convert factors to string for Tukey labels
-    df['MTRANS_str'] = df['MTRANS'].astype(str)
-    df['CAEC_str'] = df['CAEC'].astype(str)
+    df["MTRANS_str"] = df["MTRANS"].astype(str)
+    df["CAEC_str"] = df["CAEC"].astype(str)
 
     # --- Tukey for MTRANS ---
     tukey_mtrans = pairwise_tukeyhsd(
-        endog=df['Weight'],
-        groups=df['MTRANS_str'],
-        alpha=0.05
+        endog=df["Weight"], groups=df["MTRANS_str"], alpha=0.05
     )
 
     # Convert Tukey result to DataFrame
     mtrans_df = pd.DataFrame(
-        data=tukey_mtrans._results_table.data[1:],   # skip header row
-        columns=tukey_mtrans._results_table.data[0]  # use header row
+        data=tukey_mtrans._results_table.data[1:],  # skip header row
+        columns=tukey_mtrans._results_table.data[0],  # use header row
     )
-
-    print("\n=== Tukey HSD for MTRANS ===")
-    print(mtrans_df.to_markdown(index=False))
-
 
     # --- Tukey for CAEC ---
     tukey_caec = pairwise_tukeyhsd(
-        endog=df['Weight'],
-        groups=df['CAEC_str'],
-        alpha=0.05
+        endog=df["Weight"], groups=df["CAEC_str"], alpha=0.05
     )
 
     caec_df = pd.DataFrame(
         data=tukey_caec._results_table.data[1:],
-        columns=tukey_caec._results_table.data[0]
+        columns=tukey_caec._results_table.data[0],
     )
-
-    print("\n=== Tukey HSD for CAEC ===")
-    print(caec_df.to_markdown(index=False))
-
     return mtrans_df, caec_df
 
 
+# --------------------------------
+# Summary Statistics (Both Datasets)
+# --------------------------------
+def quantitative_summary(df, title):
+    number_df = df.select_dtypes(include="number")
+
+    # compute summary statistics
+    summary = pd.DataFrame(
+        {
+            # Measures of Central Tendency
+            "Mean": number_df.mean(),  # find means
+            "Median": number_df.median(),  # find medians
+            "Mode": number_df.mode().iloc[0],  # find modes
+            # Measures of Variability
+            "Range": number_df.max() - number_df.min(),  # find ranges
+            "Variance": number_df.var(),  # find variances
+            "Standard Deviation": number_df.std(),  # find standard deviations
+            "IQR": number_df.quantile(0.75)
+            - number_df.quantile(0.25),  # find interquartile ranges
+        }
+    )
+
+    # create figure and axes
+    figure, axes = plt.subplots(figsize=(14, 6))
+    axes.axis("off")  # hide plot axes
+
+    # create summary table
+    summary_table = plt.table(
+        cellText=summary.round(4).values,  # round 4 decimal places
+        rowLabels=summary.index,  # label rows
+        colLabels=summary.columns,  # label columns
+        loc="center",  # center table
+        cellLoc="center",  # center text
+    )
+
+    # size table
+    summary_table.scale(1, 2)
+
+    # add title
+    plt.title(title)
+    plt.show()
+
+
+def category_summary(df, title, wine_flag=False):
+    # For wine quality dataset
+    if wine_flag:
+        category_columns = df.columns
+
+    # For obesity dataset
+    else:
+        category_columns = df.select_dtypes(exclude="number").columns
+
+    # categorical variable summary
+    for col in category_columns:
+        categorical_summary = pd.DataFrame(
+            {
+                "Quality Score": df[col]
+                .value_counts()
+                .sort_index()
+                .index,  # find quality scores
+                "Frequency": df[col].value_counts().sort_index(),  # find frequencies
+                "Proportion": df[col]
+                .value_counts(normalize=True)
+                .sort_index(),  # find proportions
+            }
+        )
+
+        # create figure and axes
+        figure, axes = plt.subplots(figsize=(14, 6))
+        axes.axis("off")  # hide plot axes
+
+        # create summary table
+        summary_table = plt.table(
+            cellText=categorical_summary.round(4).values,  # round 4 decimal places
+            colLabels=categorical_summary.columns,  # label columns
+            loc="center",  # center table
+            cellLoc="center",  # center text
+        )
+
+        # size table
+        summary_table.scale(1, 3)
+
+        # add title
+        plt.title(f"{title}: {col}")
+        plt.show()
+
+
+# --------------------------------
+# One Sample Test (Wine Quality Dataset)
+# --------------------------------
+def alcohol_t_test():
+    # get variable of interest
+    alcohol_content = X["alcohol"].values
+
+    # Hypothesized population mean
+    pop_mean = 10.5
+
+    # Sample statistics
+    n = len(alcohol_content)
+    df = n - 1
+    sample_mean = np.mean(alcohol_content)
+    sample_std = np.std(alcohol_content, ddof=1)
+
+    # Compute t-statistic manually
+    t_statistic = (sample_mean - pop_mean) / (sample_std / np.sqrt(n))
+
+    # Find t-critical value for one-tailed test
+    alpha = 0.05
+    t_crit = stats.t.ppf(1 - alpha, df)
+
+    # Print results
+    print(f"Sample mean: {sample_mean:.4f}")
+    print(f"T-statistic: {t_statistic:.4f}")
+    print(f"T-critical (one-tailed, alpha={alpha}): {t_crit:.4f}")
+
+    # Decision based on t-critical
+    if t_statistic > t_crit:
+        print("Reject the null hypothesis based on t-critical value.")
+    else:
+        print("Fail to reject the null hypothesis based on t-critical value.")
+
+    # Also show p-value for reference
+    t_stat, p_value_2tail = stats.ttest_1samp(a=alcohol_content, popmean=pop_mean)
+
+    # find one-tailed p-value
+    if t_statistic > 0:
+        p_value_1tail = p_value_2tail / 2
+    else:
+        p_value_1tail = 1 - (p_value_2tail / 2)
+
+    print(f"\nOne-Tailed P-value: {p_value_1tail:.4f}")
+
+    if p_value_1tail < alpha:
+        print("Reject the null hypothesis based on p-value.")
+    else:
+        print("Fail to reject the null hypothesis based on p-value.")
+
+    # find 95% confidence interval
+    margin_error = (stats.t.ppf(1 - 0.05 / 2, df)) * (sample_std / np.sqrt(n))
+    low_interval = sample_mean - margin_error
+    high_interval = sample_mean + margin_error
+
+    print()
+    print(f"95% Confidence Interval:\n({low_interval:.4f}, {high_interval:.4f})")
+
+
+# --------------------------------
+# ANOVA (Wine Quality Dataset)
+# --------------------------------
+def anova_analysis():
+    # combine X and Y dataframes
+    combined_data = X.join(y)
+
+    # Run ANOVA test
+    anova_model = smf.ols("alcohol ~ C(quality)", data=combined_data).fit()
+    anova_table = sm.stats.anova_lm(anova_model, typ=2)
+
+    # print table
+    print(anova_table)
+
+    # create figure and axes
+    figure, axes = plt.subplots(figsize=(14, 6))
+    axes.axis("off")  # hide plot axes
+
+    # create summary table
+    anova_table_output = plt.table(
+        cellText=anova_table.round(4).values,  # round 4 decimal places
+        rowLabels=["Quality", "Residual Error"],  # label rows
+        colLabels=[
+            "Sum of Squares",
+            "Degrees of Freedom",
+            "F-Statistic",
+            "P-Value",
+        ],  # label columns
+        loc="center",  # center table
+        cellLoc="center",  # center text
+    )
+
+    # size table
+    anova_table_output.scale(1, 2)
+
+    # add title
+    plt.title("ANOVA Table: Alcohol Content by Wine Quality")
+    plt.show()
+
+    # find rejection region
+    alpha = 0.05
+    df1 = 6
+    df2 = 6490
+
+    f_critical_value = stats.f.ppf(1 - alpha, df1, df2)
+    print(f"F-Critical Value: {f_critical_value}")
+
+    print(f"\nReject H0 if F > {f_critical_value:.4f}")
+
+    # residual check with QQ-plot
+    sm.qqplot(anova_model.resid, line="45")
+    plt.title("QQ-Plot of ANOVA Residuals")
+    plt.show()
+
+    # equal variance check with boxplots
+    sns.boxplot(x="quality", y="alcohol", data=combined_data)
+    plt.title("Alcohol Content Through Alcohol Quality Levels")
+    plt.show()
+
+
+# --------------------------------
+# Main Execution (Both Datasets)
+# --------------------------------
 if __name__ == "__main__":
-    model = interaction_plot_model()
+
+    # Sampling Distributions
+    plot_histogram_q1()
+    plot_histogram_q2()
+
+    # Bootstrap
+    runs = bootstrap()
+    plot_bootstrap(runs)
+    bootstrap_qq(runs)
+
+    # Summary Statistics
+    # Wine Quality
+    quantitative_summary(X, "Wine Quality - Quantitative Summary")
+    category_summary(y, "Wine Quality - Quality Score", wine_flag=True)
+
+    # Obesity Dataset
+    quantitative_summary(X2, "Obesity Dataset - Quantitative Summary")
+    category_summary(X2, "Obesity Dataset - Categorical Variable")
+    category_summary(y2, "Obesity Dataset - Target Variable")
+
+    # Hypothesis Tests
+    alcohol_t_test()
+
+    # ANOVA and Interaction Model
+    model = mult_comparisons()
+    plot_resid_fitted(model)
+    hypothesis_test(model)
     multiple_comparisons(model)
     pass
