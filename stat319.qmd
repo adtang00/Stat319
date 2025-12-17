@@ -464,7 +464,37 @@ def anova_analysis():
 | color                   | Categorical | red or white                  |
 : Dataset 1 Variables {tbl-q1-tb1}
 
+## Summary Statistics (Wine Quality Dataset)
 
+| Variable               | Mean    | Median | Mode | Range | Variance | Std. Dev. | IQR  |
+|------------------------|---------|--------|------|-------|----------|-----------|------|
+| Fixed Acidity          | 7.2153  | 7.00   | 6.8  | 12.1  | 1.6807   | 1.2964    | 1.3  |
+| Volatile Acidity       | 0.3397  | 0.29   | 0.28 | 1.50  | 0.0271   | 0.1646    | 0.17 |
+| Citric Acid            | 0.3186  | 0.31   | 0.30 | 1.66  | 0.0211   | 0.1453    | 0.14 |
+| Residual Sugar         | 5.4432  | 3.00   | 2.0  | 65.2  | 22.6367  | 4.7578    | 6.3  |
+| Chlorides              | 0.0560  | 0.047  | 0.044| 0.602 | 0.0012   | 0.0350    | 0.027|
+| Free Sulfur Dioxide    | 30.5253 | 29.00  | 29.0 | 288.0 | 315.0412 | 17.7494   | 24.0 |
+| Total Sulfur Dioxide   | 115.7446| 118.00 | 111.0| 434.0 | 3194.720 | 56.5219   | 79.0 |
+| Density                | 0.9947  | 0.9949 |0.9972|0.0519 | 0.0000   | 0.0030    |0.0047|
+| pH                     | 3.2185  | 3.21   | 3.16 | 1.29  | 0.0259   | 0.1608    | 0.21 |
+| Sulphates              | 0.5313  | 0.51   | 0.50 | 1.78  | 0.0221   | 0.1488    | 0.17 |
+| Alcohol                | 10.4918 | 10.30  | 9.5  | 6.90  | 1.4226   | 1.1927    | 1.8  |
+: Summary Statistics for Quantitative Variables in the Wine Quality Dataset {#tbl-wine-quant}
+
+@tbl-wine-quant summarizes the central tendency and variability of the quantitative variables int eh Wine Quality dataset. Alcohol content has a mean of approximately 10.49% and a standard deviation of 1.19. THis indicates a moderate variation across wine samples. Several of the other properties such as pH values and density, show little to no variability. In contrast, residual sugar and sulfur dioxide concentrations show larger ranges and higher variability. This reflects differences in wine styles and fermentation processes. Overall, these summary statistics show that although some chemical properties stay stable across wines, others largely vary and may contribute to differences like perceived quality.
+
+| Quality Score | Frequency | Proportion |
+|--------------|-----------|------------|
+| 3 | 30 | 0.0046 |
+| 4 | 216 | 0.0332 |
+| 5 | 2138 | 0.3291 |
+| 6 | 2836 | 0.4365 |
+| 7 | 1079 | 0.1661 |
+| 8 | 193 | 0.0297 |
+| 9 | 5 | 0.0008 |
+: Distribution of Wine Quality Scores {#tbl-wine-quality}
+
+The distribution of wine quality scores is shown in @tbl-wine-quality. A majority of the wines received a score of 5 or 6. Scores of 3-4 and 8-9 are extremely rare. The concentration around mid-range scores suggests that the dataset consists of average-quality wines, with fewer extreme cases.
 
 
 ## Sampling Distribution of Density
@@ -510,6 +540,89 @@ plot_histogram_q1()
 | NObeyesdad                        | Categorical| Obesity classification                 | -          |
 : Dataset 2 Variables {tbl-q1-tb2}
 
+## Summary Statistics (Obesity Dataset)
+
+| Variable | Mean | Median | Mode | Range | Variance | Std. Dev. | IQR |
+|--------|------|--------|------|-------|----------|-----------|-----|
+| Age (years) | 24.3126 | 22.7779 | 18.0 | 47.0 | 40.2713 | 6.346 | 6.0528 |
+| Height (m) | 1.7017 | 1.7005 | 1.7 | 0.53 | 0.0087 | 0.0933 | 0.1385 |
+| Weight (kg) | 86.5861 | 83.0 | 80.0 | 134.0 | 685.9775 | 26.1912 | 41.9573 |
+| FCVC | 2.419 | 2.3855 | 3.0 | 2.0 | 0.2851 | 0.5339 | 1.0 |
+| NCP | 2.6856 | 3.0 | 3.0 | 3.0 | 0.6053 | 0.778 | 0.3413 |
+| CH2O | 2.008 | 2.0 | 2.0 | 2.0 | 0.3757 | 0.613 | 0.8926 |
+| FAF | 1.0103 | 1.0 | 0.0 | 3.0 | 0.7235 | 0.8506 | 1.5422 |
+| TUE | 0.6579 | 0.6254 | 0.0 | 2.0 | 0.3708 | 0.6089 | 1.0 |
+: Summary Statistics for Quantitative Variables in the Obesity Dataset {#tbl-obesity-quant}
+
+@tbl-obesity-quant shows the summary stastics for quantitative variables in the Obesity database. The sample consited of primarily young adults. The average participant was aged at 24 years, with a moderate spread. Weight displays substantial variability and has a standard deviation exceeding 26 kg. In contrast, height shows much less variability. 
+
+| Gender | Frequency | Proportion |
+|--------|-----------|------------|
+| Female | 1043 | 0.4941 |
+| Male | 1068 | 0.5059 |
+: Gender Distribution in the Obesity Dataset {#tbl-obesity-gender}
+
+| Family History | Frequency | Proportion |
+|----------------|-----------|------------|
+| No | 385 | 0.1824 |
+| Yes | 1726 | 0.8176 |
+: Family History of Overweight {#tbl-obesity-family}
+
+| FAVC | Frequency | Proportion |
+|------|-----------|------------|
+| No | 245 | 0.1161 |
+| Yes | 1866 | 0.8839 |
+: Frequent High-Calorie Food Consumption (FAVC) {#tbl-obesity-favc}
+
+| Snacking Frequency | Frequency | Proportion |
+|-------------------|-----------|------------|
+| Always | 53 | 0.0251 |
+| Frequently | 242 | 0.1146 |
+| Sometimes | 1765 | 0.8361 |
+| No | 51 | 0.0242 |
+: Snacking Between Meals (CAEC) {#tbl-obesity-caec}
+
+| Smoking | Frequency | Proportion |
+|---------|-----------|------------|
+| No | 2067 | 0.9792 |
+| Yes | 44 | 0.0208 |
+: Smoking Status {#tbl-obesity-smoke}
+
+| Calorie Monitoring | Frequency | Proportion |
+|--------------------|-----------|------------|
+| No | 2015 | 0.9545 |
+| Yes | 96 | 0.0455 |
+: Calorie Monitoring (SCC) {#tbl-obesity-scc}
+
+| Alcohol Consumption | Frequency | Proportion |
+|--------------------|-----------|------------|
+| Always | 1 | 0.0005 |
+| Frequently | 70 | 0.0332 |
+| Sometimes | 1401 | 0.6637 |
+| No | 639 | 0.3027 |
+: Alcohol Consumption Frequency (CALC) {#tbl-obesity-calc}
+
+| Transportation Mode | Frequency | Proportion |
+|--------------------|-----------|------------|
+| Automobile | 457 | 0.2165 |
+| Bike | 7 | 0.0033 |
+| Motorbike | 11 | 0.0052 |
+| Public Transportation | 1580 | 0.7485 |
+| Walking | 56 | 0.0265 |
+: Mode of Transportation (MTRANS) {#tbl-obesity-mtrans}
+
+| Obesity Category | Frequency | Proportion |
+|-----------------|-----------|------------|
+| Insufficient Weight | 272 | 0.1288 |
+| Normal Weight | 287 | 0.1360 |
+| Obesity Type I | 351 | 0.1663 |
+| Obesity Type II | 297 | 0.1407 |
+| Obesity Type III | 324 | 0.1535 |
+| Overweight Level I | 290 | 0.1374 |
+| Overweight Level II | 290 | 0.1374 |
+: Obesity Classification (NObeyesdad) {#tbl-obesity-target}
+
+@tbl-obesity-gender through @tbl-obesity-target summarize the distributions of categorical variables in the Obesity dataset. The sample is approximately evenly split by gender. A large majority of participants report a family history of overweight and frequent consumption of high-calorie foods, which shows that genetic and dietary risk factors are common in this population. Snacking between meals is also prevalent, with most individuals reporting that they snack at least sometimes. Smoking and calorie monitoring behaviors are relatively uncommon, suggesting that these factors are unlikely to play a major role in weight variation within this sample. Public transportation is the dominant mode of transportation, while active transportation methods such as walking and biking are rare. Finally, the obesity classification variable is fairly evenly distributed across normal weight, overweight, and obesity categories, which makes the dataset well suited for comparision analyses across weight groups.
 
 ## Sampling Distribution of Weight
 ```{python}
@@ -531,6 +644,14 @@ plot_histogram_q2()
 **Hypotheses:**  The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content of red and white wine is greater than 10.5%.  
 
 ## 2.2 Assumptions
+
+The validity of the one-sample t-test relies on several key assumptions:  
+1. **Independence:**  
+    Each observation represents a separate wine sample, and there is no indication that the measurements are related. Independence is satisfied since the wines were independently sampled.  
+2. **Normality:**  
+    Although the distribution of alcohol content is not perfectly normal, the sample size is very large, n=6,497. Thus, by the Central Limit Theorem, the sampling distribution of the sample mean is approximately normal, which satisfies the normality requirement.
+
+Thus, the assumptions necessary for the one-sample t-test are reasonably satisfied.
 
 ## 2.3 Test 
 **Results:**  
@@ -581,11 +702,76 @@ print("The bootstrap test CI was calculated to be " + "(" + str(lower) + ", " + 
 
 ## 4.1 F Test
 
+The goal of this analysis is to determine whether the mean alcohol content differs across wine quality levels.
+
+The null hypothesis states that the mean alcohol content is equal across all quality categories:
+$$
+H_0: \mu_3 = \mu_4 = \mu_5 = \mu_6 = \mu_7 = \mu_8 = \mu_9
+$$
+
+The alternative hypothesis states that at least one quality level has a different mean alcohol content:
+$$
+H_1: \text{At least one mean differs}
+$$
+
+The one-way ANOVA F-test yielded a test statistic of
+$$
+F = 320.59.
+$$
+
+At a significance level of $\alpha = 0.05$, the rejection region is defined as
+$$
+F > 2.10.
+$$
+
+Since the observed F-statistic greatly exceeds the critical value and the associated p-value is less than 0.0001, the null hypothesis is rejected.
+
+
 ## 4.2 ANOVA Table
+
+| Source of Variation | Sum of Squares | Degrees of Freedom | F-Statistic | p-value |
+|--------------------|---------------|--------------------|-------------|---------|
+| Wine Quality       | 2112.73       | 6                  | 320.59      | < 0.0001 |
+| Residual Error     | 7128.23       | 6490               | —           | —       |
+| **Total**          | **9240.96**   | **6496**           |             |         |
+: ANOVA Table for Alcohol Content by Wine Quality Level {#tbl-anova-alcohol}
+
+Table @tbl-anova-alcohol summarizes the results of the one-way ANOVA for alcohol content across wine quality levels.
 
 ## 4.3 AVOVA Assumptions Check
 
+```{python}
+#| echo: false
+#| label: fig-anova-qq
+#| fig-cap: "QQ plot of residuals from the one-way ANOVA model for alcohol content"
+#| fig-pos: "H"
+
+anova_model = smf.ols("alcohol ~ C(quality)", data=X.join(y)).fit()
+sm.qqplot(anova_model.resid, line="45")
+plt.show()
+
+```
+
+@fig-anova-qq assesses the normality assumption for the ANOVA by displaying the QQ plot of residuals. Since the residuals lie approximately along the reference line with only minor deviations, the normality assumption for the ANOVA residuals is reasonably satisfied.
+
+```{python}
+#| echo: false
+#| label: fig-anova-box
+#| fig-cap: "Boxplots of alcohol content across wine quality levels"
+#| fig-pos: "H"
+
+combined_data = X.join(y)
+sns.boxplot(x="quality", y="alcohol", data=combined_data)
+plt.xlabel("Wine Quality")
+plt.ylabel("Alcohol Content (%)")
+plt.show()
+
+```
+@fig-anova-box checks that all groups have a roughly equal variance by comparing the spread of alcohol content across wine quality groups. The boxplots show similar spread and variability, which shows that the equal variance assumption is not violated.  
+Overall, the figures indicate that the assumptions required for the one-way ANOVA are satisfied. 
+
 ## 4.4 Conclusion
+Based on the results of the one-way ANOVA, the null hypothesis of equal mean alcohol content across wine quality levels in rejected at 5% significance level. This supplies strong evidence that alcohol content differs among at at least some wine quality categories. Since ANOVA doesn't identify which specific quality levels differ, the next step is to conduct comparision procedures like Tukey's HSD test, to determine where the differences occur.
 
 ---
 
