@@ -740,7 +740,7 @@ plt.show()
 
 ```
 
-@fig-anova-qq assesses the normality assumption for the ANOVA by displaying the QQ plot of residuals from the ANOVA model for alcohol content. The points fall closely along the reference line for most of the distribution, which indicates that the residuals are approximately normally distributed. Small deviations are visible on each tail of the graph, which suggests mild deviations from normal. However, these deviations are limited and not systematic. Additionally, ANOVA remains valid under minor violations of the normality assumption, so these tail deviations are not problematic. Overall, the QQ plot provides sufficient evidence that the normality assumption for ANOVA residuals is reasonably satisfied, supporting the validity of the ANOVA results.
+@fig-anova-qq assesses the normality assumption for the ANOVA by displaying the QQ plot of residuals from the ANOVA model for alcohol content. The points fall closely along the reference line for most of the distribution, which indicates that the residuals are approximately normally distributed. Towards the right tail, datapoints begin to deviate away from the normal line slightly. There is one datapoint that strays far from the normal line, indicating a possible outlier. On the left hand side, the datapoints create a slight upwards curve. Small deviations are visible on each tail of the graph, which suggests mild deviations from normal. However, these deviations are limited to the tail ends. Overall, the QQ plot provides sufficient evidence that the normality assumption for ANOVA residuals is reasonably satisfied, supporting the validity of the ANOVA results.
 ```{python}
 #| echo: false
 #| label: fig-anova-box
