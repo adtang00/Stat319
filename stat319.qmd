@@ -615,7 +615,7 @@ plot_histogram_q1()
 plot_histogram_q2()
 ```
 
-@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell-shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg. The right tail has some samples as high as 104 kg, and the left tail has some samples as low as 70 kg. There is no noticeable skewness and heavy tails. 
+@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg. The right tail has some samples as high as 104 kg, and the left tail has some samples as low as 70 kg. The left side of the histogram has a more gradual drop off as it moves towards the tail compared to the more steeper drop off on the right of the mean. There is no noticeable skewness and heavy tails. 
 
 ---
 
@@ -755,9 +755,8 @@ plt.ylabel("Alcohol Content (%)")
 plt.show()
 
 ```
-@fig-anova-box checks that all groups have a roughly equal variance by comparing the spread of alcohol content across wine quality groups. The boxplots show similar spread and variability, which shows that the equal variance assumption is not violated.  
 
-Overall, the figures indicate that the assumptions required for the one-way ANOVA are satisfied. 
+@fig-anova-box shows the spread of alcohol content across wine quality groups. The heights of the boxplots are relatively similar, indicating variance is comparable across groups and suggesting that the equal variance assumption is satisfied. The medians of a few groups show slight skewness, while others are more symmetric. These minor deviations are unlikely to affect the results given the relatively large sample sizes. Overall, the visual checks support that the assumptions required for the one-way ANOVA normality of residuals and equal variance.
 
 ## 4.4 Conclusion
 Based on the results of the one-way ANOVA, the null hypothesis of equal mean alcohol content across wine quality levels in rejected at 5% significance level. This supplies strong evidence that alcohol content differs among at at least some wine quality categories. Since ANOVA doesn't identify which specific quality levels differ, the next step is to conduct comparision procedures like Tukey's HSD test, to determine where the differences occur.
