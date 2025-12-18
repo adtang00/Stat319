@@ -133,7 +133,7 @@ def plot_resid_fitted(model):
     # Create plots
     fig, ax = plt.subplots(1, 2, figsize=(12,5))
 
-    # 1. Q-Q plot of residuals
+    # 1. QQ plot of residuals
     sm.qqplot(residuals, line='s', ax=ax[0])
     ax[0].set_title('QQ Plot of Residuals')
 
@@ -463,7 +463,7 @@ def anova_analysis():
 | Alcohol                | 10.4918 | 10.30  | 9.5  | 6.90  | 1.4226   | 1.1927    | 1.8  |
 : Summary Statistics for Quantitative Variables in the Wine Quality Dataset {#tbl-wine-quant}
 
-@tbl-wine-quant summarizes the central tendency and variability of the quantitative variables int eh Wine Quality dataset. Alcohol content has a mean of approximately 10.49% and a standard deviation of 1.19. THis indicates a moderate variation across wine samples. Several of the other properties such as pH values and density, show little to no variability. In contrast, residual sugar and sulfur dioxide concentrations show larger ranges and higher variability. This reflects differences in wine styles and fermentation processes. Overall, these summary statistics show that although some chemical properties stay stable across wines, others largely vary and may contribute to differences like perceived quality.
+@tbl-wine-quant summarizes the central tendency and variability of the quantitative variables in the Wine Quality dataset. Alcohol content has a mean of approximately 10.49% and a standard deviation of 1.19. THis indicates a moderate variation across wine samples. Several of the other properties such as pH values and density, show little to no variability. In contrast, residual sugar and sulfur dioxide concentrations show larger ranges and higher variability. This reflects differences in wine styles and fermentation processes. Overall, these summary statistics show that although some chemical properties stay stable across wines, others largely vary and may contribute to differences like perceived quality.
 
 | Quality Score | Frequency | Proportion |
 |--------------|-----------|------------|
@@ -536,7 +536,7 @@ plot_histogram_q1()
 | TUE | 0.6579 | 0.6254 | 0.0 | 2.0 | 0.3708 | 0.6089 | 1.0 |
 : Summary Statistics for Quantitative Variables in the Obesity Dataset {#tbl-obesity-quant}
 
-@tbl-obesity-quant shows the summary stastics for quantitative variables in the Obesity database. The sample consited of primarily young adults. The average participant was aged at 24 years, with a moderate spread. Weight displays substantial variability and has a standard deviation exceeding 26 kg. In contrast, height shows much less variability. 
+@tbl-obesity-quant shows the summary stastics for quantitative variables in the Obesity dataset. The sample consited of primarily young adults. The average participant was aged at 24 years, with a moderate spread. Weight displays substantial variability and has a standard deviation exceeding 26 kg. In contrast, height shows much less variability. 
 
 | Gender | Frequency | Proportion |
 |--------|-----------|------------|
@@ -615,7 +615,7 @@ plot_histogram_q1()
 plot_histogram_q2()
 ```
 
-@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg. The right tail has some samples as high as 104 kg, and the left tail has some samples as low as 70 kg. The left side of the histogram has a more gradual drop off as it moves towards the tail compared to the more steeper drop off on the right of the mean. There is no noticeable skewness and heavy tails. 
+@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell-shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg. The right tail has some samples as high as 104 kg, and the left tail has some samples as low as 70 kg. The left side of the histogram has a more gradual drop off as it moves towards the tail compared to the more steeper drop off on the right of the mean. There is no noticeable skewness and heavy tails. 
 
 ---
 
@@ -669,7 +669,7 @@ plot_bootstrap(vals)
 bootstrap_qq(vals)
 ```
 
-@fig-q3-2 is the QQ plot of the Bootstrap Means. The data points lie entirely on the normal line, indicating that the distribution is approximatly normal. 
+@fig-q3-2 is the QQ plot of the Bootstrap Means. The data points lie entirely on the normal line, indicating that the distribution is approximately normal. 
 
 ## 3.3 Bootstrap Confidence Interval
 ```{python, echo=False}
@@ -726,12 +726,12 @@ Since the observed F-statistic greatly exceeds the critical value and the associ
 
 Table @tbl-anova-alcohol summarizes the results of the one-way ANOVA for alcohol content across wine quality levels.
 
-## 4.3 AVOVA Assumptions Check
+## 4.3 ANOVA Assumptions Check
 
 ```{python}
 #| echo: false
 #| label: fig-anova-qq
-#| fig-cap: "QQ plot of residuals from the one-way ANOVA model for alcohol content"
+#| fig-cap: "QQ Plot of Residuals from the One-Way ANOVA Model for Alcohol Content"
 #| fig-pos: "H"
 
 anova_model = smf.ols("alcohol ~ C(quality)", data=X.join(y)).fit()
@@ -740,8 +740,7 @@ plt.show()
 
 ```
 
-@fig-anova-qq assesses the normality assumption for the ANOVA by displaying the QQ plot of residuals. Since the residuals lie approximately along the reference line with only minor deviations, the normality assumption for the ANOVA residuals is reasonably satisfied.
-
+@fig-anova-qq assesses the normality assumption for the ANOVA by displaying the QQ plot of residuals from the ANOVA model for alcohol content. The points fall closely along the reference line for most of the distribution, which indicates that the residuals are approximately normally distributed. Small deviations are visible on each tail of the graph, which suggests mild deviations from normal. However, these deviations are limited and not systematic. Additionally, ANOVA remains valid under minor violations of the normality assumption, so these tail deviations are not problematic. Overall, the QQ plot provides sufficient evidence that the normality assumption for ANOVA residuals is reasonably satisfied, supporting the validity of the ANOVA results.
 ```{python}
 #| echo: false
 #| label: fig-anova-box
@@ -759,7 +758,7 @@ plt.show()
 @fig-anova-box shows the spread of alcohol content across wine quality groups. The heights of the boxplots are relatively similar, indicating variance is comparable across groups and suggesting that the equal variance assumption is satisfied. The medians of a few groups show slight skewness, while others are more symmetric. These minor deviations are unlikely to affect the results given the relatively large sample sizes. Overall, the visual checks support that the assumptions required for the one-way ANOVA normality of residuals and equal variance.
 
 ## 4.4 Conclusion
-Based on the results of the one-way ANOVA, the null hypothesis of equal mean alcohol content across wine quality levels in rejected at 5% significance level. This supplies strong evidence that alcohol content differs among at at least some wine quality categories. Since ANOVA doesn't identify which specific quality levels differ, the next step is to conduct comparision procedures like Tukey's HSD test, to determine where the differences occur.
+Based on the results of the one-way ANOVA, the null hypothesis of equal mean alcohol content across wine quality levels is rejected at the 5% significance level. This supplies strong evidence that alcohol content differs among at least some wine quality categories. Visual inspection of the boxplots and QQ plot support the validity of this conclusion. The boxplots in @fig-anova-box show comparable spreads across groups, indicating that the equal variances assumption is reasonably satisfied. Furthermore, the QQ plot in @fig-anova-qq demonstrates that the ANOVA residuals are approximately normally distributed with only minor, non-systematic deviations. Given that the required assumptions for ANOVA are adequately met, the ANOVA results are considered reliable. Since ANOVA doesn't identify which specific quality levels differ, the next step is to conduct comparison procedures, such as Tukey's HSD test, to determine where the differences occur.
 
 ---
 
@@ -823,7 +822,7 @@ mtrans_df
 
 - **reject**: Indicates whether the null hypothesis of equal means is rejected at $\alpha = 0.05$.
 
-**Conclusion:** From @tbl-q5-1, the Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectivly. These results suggest that walking is assosiated with a lower average weight. 
+**Conclusion:** From @tbl-q5-1, the Tukey HSD pairwise comparisons revealed a few significant differences between pairs of transportation methods. There were differences between Automobile vs. Walking and also Public Transportation vs. Walking. The mean difference in Weight were 15.3 and 16.9 respectively. These results suggest that walking is assosiated with a lower average weight. 
 
 ```{python}
 #| echo: false
@@ -844,7 +843,7 @@ caec_df
 
 **Conclusion:** From @tbl-q5-2 shows the results of Tukey's HSD test on pairwise differences across the different levels of CAEC in mean Weight. Almost all pairs presented significant differences.
 
-The largest difference was between individuals who snacked between meals 'frequently' and 'sometimes', with the mean difference being 32.47. Additionally, individuals who snack 'never'differ greatly from ones who snacked 'frequently' and 'sometimes'. 
+The largest difference was between individuals who snacked between meals 'frequently' and 'sometimes', with the mean difference being 32.47. Additionally, individuals who snack 'never' differ greatly from ones who snacked 'frequently' and 'sometimes'. 
 
 Overall, these results suggest that the frequency of snacking between meals is strongly associated with differences in mean weight, with the exception of the 'always' vs. 'no' comparison, which did not produce a significant difference.
 
