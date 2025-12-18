@@ -102,19 +102,6 @@ def bootstrap_qq(vals):
 # ANOVA and Interaction Model (Obesity Dataset)
 # --------------------------------
 def mult_comparisons():
-    # fetch dataset 
-    #estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition = fetch_ucirepo(id=544) 
-    
-    # data (as pandas dataframes) 
-    #X = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.features 
-    #y = estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.data.targets 
-    
-    # metadata 
-    #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.metadata) 
-    
-    # variable information 
-    #print(estimation_of_obesity_levels_based_on_eating_habits_and_physical_condition.variables) 
-
     df = pd.concat([X2, y2], axis=1)
     df.columns = list(X2.columns) + list(y2.columns)
 
@@ -128,7 +115,7 @@ def mult_comparisons():
     df['MTRANS'], df['CAEC'], df['Weight'],
     colors=['red','blue','green','orange'],
     markers=['o','s','^','D'], ms=8,
-    ax=ax # pass axes to avoid auto (a)/(b)
+    ax=ax 
     )
     ax.set_xlabel('MTRANS')
     ax.set_ylabel('Weight (kg)')
@@ -162,7 +149,7 @@ def plot_resid_fitted(model):
 
 def hypothesis_test(model):
     anova_table = sm.stats.anova_lm(model, typ=2)
-    # 4. Hypothesis test for equality of means
+    
     # Calculate MSA and MSB
     msa = anova_table['sum_sq']['C(MTRANS)'] / anova_table['df']['C(MTRANS)']
     msb = anova_table['sum_sq']['C(CAEC)'] / anova_table['df']['C(CAEC)']
@@ -204,12 +191,8 @@ def multiple_comparisons(model):
     from statsmodels.stats.multicomp import pairwise_tukeyhsd
     import pandas as pd
 
-    # Extract dataframe used in the model
     df = model.model.data.frame.copy()
 
-    # Convert factors to string for Tukey labels
-    #df['MTRANS_str'] = df['MTRANS'].astype(str)
-    #df['CAEC_str'] = df['CAEC'].astype(str)
     df['MTRANS_str'] = df['MTRANS'].astype(str).str.replace('_', ' ')
     df['CAEC_str'] = df['CAEC'].astype(str).str.replace('_', ' ')
 
@@ -228,7 +211,7 @@ def multiple_comparisons(model):
 
     mtrans_df = mtrans_df.rename(columns={'group1': 'Transportion A', 'group2': 'Transportion B'})
 
-    # --- Tukey for CAEC ---
+    
     tukey_caec = pairwise_tukeyhsd(
         endog=df['Weight'],
         groups=df['CAEC_str'],
@@ -327,7 +310,6 @@ def category_summary(df, title, wine_flag=False):
 # One Sample Test (Wine Quality Dataset)
 # --------------------------------
 def alcohol_t_test():
-    # get variable of interest
     alcohol_content = X["alcohol"].values
 
     # Hypothesized population mean
@@ -439,7 +421,7 @@ def anova_analysis():
 
 # 1. Dataset Overview
 
-## A. Wine Quality Dataset
+## 1.1 Wine Quality Dataset
 
 - **Collection Year:** Dataset was collected in 2009.
 - **Study Type:** The study is observational. Each wine was independently sampled.
@@ -464,7 +446,7 @@ def anova_analysis():
 | color                   | Categorical | red or white                  |
 : Dataset 1 Variables {tbl-q1-tb1}
 
-## Summary Statistics (Wine Quality Dataset)
+### 1.1.1 Summary Statistics 
 
 | Variable               | Mean    | Median | Mode | Range | Variance | Std. Dev. | IQR  |
 |------------------------|---------|--------|------|-------|----------|-----------|------|
@@ -497,7 +479,7 @@ def anova_analysis():
 The distribution of wine quality scores is shown in @tbl-wine-quality. A majority of the wines received a score of 5 or 6. Scores of 3-4 and 8-9 are extremely rare. The concentration around mid-range scores suggests that the dataset consists of average-quality wines, with fewer extreme cases.
 
 
-## Sampling Distribution of Density
+### 1.1.2 Sampling Distribution of Density
 
 The following histogram shows the sampling distribution of the **sample mean of the `density` variable**.
 
@@ -511,7 +493,7 @@ plot_histogram_q1()
 @fig-q1 shows the sampling distribution of the sample mean of wine densities. There is a heavy clustering with similar frequencies from 0.9945 to 0.995 g/ml. The right tail appears thinner than the left tail but with small frequencies. The shape of the sampling distribution is approximately normal with little to no skew.
 
 
-## B. Obesity Dataset
+## 1.2 Obesity Dataset
 
 - **Collection Year:** The dataset was collected in 2019.
 - **Study Type:** The study is observational, each person was measured independently. 
@@ -540,7 +522,7 @@ plot_histogram_q1()
 | NObeyesdad                        | Categorical| Obesity classification                 | -          |
 : Dataset 2 Variables {tbl-q1-tb2}
 
-## Summary Statistics (Obesity Dataset)
+### 1.2.1 Summary Statistics 
 
 | Variable | Mean | Median | Mode | Range | Variance | Std. Dev. | IQR |
 |--------|------|--------|------|-------|----------|-----------|-----|
@@ -624,7 +606,7 @@ plot_histogram_q1()
 
 @tbl-obesity-gender through @tbl-obesity-target summarize the distributions of categorical variables in the Obesity dataset. The sample is approximately evenly split by gender. A large majority of participants report a family history of overweight and frequent consumption of high-calorie foods, which shows that genetic and dietary risk factors are common in this population. Snacking between meals is also prevalent, with most individuals reporting that they snack at least sometimes. Smoking and calorie monitoring behaviors are relatively uncommon, suggesting that these factors are unlikely to play a major role in weight variation within this sample. Public transportation is the dominant mode of transportation, while active transportation methods such as walking and biking are rare. Finally, the obesity classification variable is fairly evenly distributed across normal weight, overweight, and obesity categories, which makes the dataset well suited for comparision analyses across weight groups.
 
-## Sampling Distribution of Weight
+### 1.2.2 Sampling Distribution of Weight
 ```{python}
 #| echo: false
 #| label: fig-q2
@@ -633,28 +615,30 @@ plot_histogram_q1()
 plot_histogram_q2()
 ```
 
-@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell-shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg, with a slightly larger frequency on the left of the center than the right. There is no noticeable skewness. 
+@fig-q2 shows the sampling distribution of the sample mean of individual weights. The histogram is approximately symmetric and bell-shaped, resembling the normal distribution. The sample clusters around 87 and 88 Kg. The right tail has some samples as high as 104 kg, and the left tail has some samples as low as 70 kg. There is no noticeable skewness and heavy tails. 
 
 ---
 
 # 2. One-Sample T-Test: Wine Alcohol Content
 ## 2.1 Research Question and Hypothesis
-**Research Question:** Is the average alcohol content of red and white wine greater than 10.5%?
+- **Research Question:** Is the average alcohol content of red and white wine greater than 10.5%?
 
-**Hypotheses:**  The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content of red and white wine is greater than 10.5%.  
+- **Hypotheses:**  The null hypothesis states that the population mean alcohol content is equal to 10.5%, while the alternate hypothesis claims the population mean alcohol content of red and white wine is greater than 10.5%.  
 
 ## 2.2 Assumptions
 
 The validity of the one-sample t-test relies on several key assumptions:  
+
 1. **Independence:**  
     Each observation represents a separate wine sample, and there is no indication that the measurements are related. Independence is satisfied since the wines were independently sampled.  
 2. **Normality:**  
-    Although the distribution of alcohol content is not perfectly normal, the sample size is very large, n=6,497. Thus, by the Central Limit Theorem, the sampling distribution of the sample mean is approximately normal, which satisfies the normality requirement.
+    Although the distribution of alcohol content is not perfectly normal, the sample size is very large, n = 6497. Thus, by the Central Limit Theorem, the sampling distribution of the sample mean is approximately normal, which satisfies the normality requirement.
 
 Thus, the assumptions necessary for the one-sample t-test are reasonably satisfied.
 
 ## 2.3 Test 
 **Results:**  
+
 In the one-sample t-test, the sample mean was 10.492, with a corresponding t-statistic of −0.5541. At a significance level of α = 0.05, the critical t-value for a one-tailed test was 1.6451. The resulting one-tailed p-value was 0.7102. Since the test statistic does not exceed the critical value and the p-value is greater than α, there is insufficient evidence to reject the null hypothesis. Lastly, the 95% confidence interval for the population mean was (10.4628, 10.5208). 
 
 ## 2.4 Conclusion:
@@ -674,6 +658,8 @@ vals = bootstrap()
 plot_bootstrap(vals)
 ```
 
+@fig-q3-1 is the Bootstrap Distribution of Wine pH. The distribution appears approximately normal centered around a mean pH of 3.22. The frequency near the center are roughly 500.
+
 ## 3.2 QQ Plot for Bootstrap
 ```{python}
 #| echo: false
@@ -682,6 +668,8 @@ plot_bootstrap(vals)
 #| fig-pos: "H"
 bootstrap_qq(vals)
 ```
+
+@fig-q3-2 is the QQ plot of the Bootstrap Means. The data points lie entirely on the normal line, indicating that the distribution is approximatly normal. 
 
 ## 3.3 Bootstrap Confidence Interval
 ```{python, echo=False}
@@ -700,7 +688,7 @@ print("The bootstrap test CI was calculated to be " + "(" + str(lower) + ", " + 
 
 # 4. Analysis of Variance (Wine Dataset)
 
-## 4.1 F Test
+## 4.1 F - Test
 
 The goal of this analysis is to determine whether the mean alcohol content differs across wine quality levels.
 
@@ -768,6 +756,7 @@ plt.show()
 
 ```
 @fig-anova-box checks that all groups have a roughly equal variance by comparing the spread of alcohol content across wine quality groups. The boxplots show similar spread and variability, which shows that the equal variance assumption is not violated.  
+
 Overall, the figures indicate that the assumptions required for the one-way ANOVA are satisfied. 
 
 ## 4.4 Conclusion
@@ -809,7 +798,7 @@ plot_resid_fitted(model)
 | CAEC    | 149.69     | 2.609      | $1.11 \times 10^{-16}$   | Reject H₀: At least one group mean differs |
 : ANOVA results for MTRANS and CAEC factors {#tbl-anova_mtrans_caec}
 
-**Interpretation:** Both MTRANS and CAEC significantly affect Weight; differences between group means are unlikely due to chance.  
+**Interpretation:** @tbl-anova_mtrans_caec shows the ANOVA results of the two way effect of MTRANS and CAEC on mean weight. In each factor, the F-statistic is greater than the critical value, indicating that at least one group within each factor has a mean weight that is significantly different from another group. 
 
 ## 5.4 Pairwise Comparisons
 ```{python}
@@ -854,7 +843,11 @@ caec_df
 
 - **reject**: Indicates whether the null hypothesis of equal means is rejected at $\alpha = 0.05$.
 
-**Conclusion:** 
+**Conclusion:** From @tbl-q5-2 shows the results of Tukey's HSD test on pairwise differences across the different levels of CAEC in mean Weight. Almost all pairs presented significant differences.
+
+The largest difference was between individuals who snacked between meals 'frequently' and 'sometimes', with the mean difference being 32.47. Additionally, individuals who snack 'never'differ greatly from ones who snacked 'frequently' and 'sometimes'. 
+
+Overall, these results suggest that the frequency of snacking between meals is strongly associated with differences in mean weight, with the exception of the 'always' vs. 'no' comparison, which did not produce a significant difference.
 
 ---
 
